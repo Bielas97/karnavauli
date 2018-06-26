@@ -44,11 +44,11 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
         }
 
         //wpisywanie na sztywno uzytkownikow
-        /*auth
+      /*  auth
                 .inMemoryAuthentication()
                 .withUser("user").password("1234").roles(String.valueOf(Role.USER))
                 .and()
-                .withUser("admin").password("1234").roles(String.valueOf(Role.ADMIN))
+                .withUser("admin").password("1234").roles(String.valueOf(Role.CEO))
                 .and()
                 .withUser("admin_lazarski").password("1234").roles(String.valueOf(Role.LAZARSKI_ADMIN))
                 .and()
