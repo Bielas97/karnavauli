@@ -3,11 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>INDEX</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/indexStyles.css" />
+
 </head>
 <body>
-    <h1>HELLO</h1>
-    <form th:action="@{/app-logout}" method="post">
-        <input class="btn btn-danger" type="submit" value="LOG OUT" />
-    </form>
+
+<div style="background: black">
+    <div id="header">
+        <br>
+        <h2 style="text-align: center; color: white">
+            <a href="/" style="text-decoration: none; color: white;">System Sprzedaży biletów na bal Karnavauli 2019</a>
+        </h2>
+        <br>
+    </div>
+</div>
+
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+
+            <div class="list-group">
+                <a href="/showCustomers" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Klienci</h5>
+                        <small class="text-muted">Wszyscy</small>
+                    </div>
+                    <p class="mb-1">Pokaż wszystkich klientów</p>
+                    <small>Dodaj, zmodyfikuj, usuń</small>
+                </a>
+                <a href="/tickets" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Bilety</h5>
+                        <small class="text-muted">Wszyscy, Administrator</small>
+                    </div>
+                    <p class="mb-1">Pokaż wszystkie rodzaje biletów</p>
+                    <small>Dodaj, zmodyfikuj, usuń - administrator</small>
+                </a>
+                <a href="/users" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Sprzedawcy</h5>
+                        <small class="text-muted">Wszyscy</small>
+                    </div>
+                    <p class="mb-1">Pokaż wszystkich sprzedawców</p>
+                </a>
+                <a href="/register" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Nowy sprzedawca</h5>
+                        <small class="text-muted">Administrator</small>
+                    </div>
+                    <p class="mb-1">Zarejestruj nowego sprzedawcę</p>
+                </a>
+                <a href="/permissions" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Uprawnienia</h5>
+                        <small class="text-muted">Administrator</small>
+                    </div>
+                    <p class="mb-1">Zmień uprawnienia użytkownikom</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-2">
+            Zalogowany jako <p th:text="${user}"></p>
+        </div>
+        <div>
+            <form th:action="@{/app-logout}" method="post">
+                <input class="btn btn-danger" type="submit" value="Wyloguj" />
+            </form>
+        </div>
+        <div>
+            <button id="clickMe" class="btn btn-success btn-lg">CLICK ME</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+<script src="/js/indexScript.js" ></script>
 </body>
 </html>

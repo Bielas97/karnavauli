@@ -1,6 +1,6 @@
 package com.karnavauli.app.security;
 
-import com.karnavauli.app.model.Role;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -62,13 +61,18 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/user").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
-                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN), String.valueOf(Role.USER)) //strona dla kazdego
+                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN), String.valueOf(Role.USER),
+                    String.valueOf(Role.SGSP_ADMIN)) //strona dla kazdego
                 .antMatchers("/admin").hasAnyRole(String.valueOf(Role.CEO)) //strona tylko dla CEO
-                .antMatchers("/testUczelnie").hasAnyRole( String.valueOf(Role.PW_ADMIN),
-                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN)) //strona dla uczlenianych adminow
+                .antMatchers("/testUczelnie").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
+                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN),
+                    String.valueOf(Role.SGSP_ADMIN)) //strona dla uczlenianych adminow
                 .antMatchers("/register").hasAnyRole(String.valueOf(Role.CEO)) // strona tylko dla CEO
+                .antMatchers("/ticket/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
+                .antMatchers("/ticket/remove/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .anyRequest().authenticated() // pozostale zadania maja byc objete logowaniem
 
+                    //strona addCustomer jest dla kazdego i to mowi powyzsza linijka
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()

@@ -2,9 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>register</title>
+    <title>CustomerForm</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
 </head>
 <body>
 
@@ -20,46 +21,46 @@
 
 <br>
 
-<div class="container">
+
+<div class="container" th:if="${isAnySeatFree}">
     <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
-            <h2 class="mt-5">Zarejestruj nowego uzytkownika</h2>
-            <form th:action="@{/register}" method="post" th:object="${userDto}" >
+            <h2 class="mt-5">Dodaj klienta</h2>
+            <form th:action="@{/addCustomer}" method="post" th:object="${customerDto}" >
+                <input type="text" th:field="*{id}" hidden="hidden"/>
                 <div class="form-group">
-                    <label class="h3" for="name">Username:</label>
-                    <input id="name" class="form-control" type="text" th:field="*{username}"/>
-                </div>
-                <div th:if="${errors.containsKey('username')}">
-                    <p class="text-danger" th:text="${errors.get('username')}"></p>
+                    <label class="h3" for="name">Imię:</label>
+                    <input id="name" class="form-control" type="text" th:field="*{name}"/>
                 </div>
                 <div class="form-group">
-                    <label class="h3" for="surname">Password:</label>
-                    <input id="surname" class="form-control" type="password" th:field="*{password}"/>
-                </div>
-                <div th:if="${errors.containsKey('password')}">
-                    <p class="text-danger" th:text="${errors.get('password')}"></p>
+                    <label class="h3" for="surname">Nazwisko:</label>
+                    <input id="surname" class="form-control" th:field="*{surname}"/>
                 </div>
                 <div class="form-group">
-                    <label class="h3" for="hireDate">Confirm password:</label>
-                    <input id="hireDate" class="form-control" type="password" th:field="*{confirmPassword}"/>
+                    <label class="h3" for="hireDate">E-mail:</label>
+                    <input id="hireDate" class="form-control" th:field="*{mail}"/>
                 </div>
-                <div th:if="${errors.containsKey('confirmPassword')}">
-                    <p class="text-danger" th:text="${errors.get('confirmPassword')}"></p>
+                <div th:if="${errors.containsKey('mail')}">
+                    <p class="text-danger" th:text="${errors.get('mail')}"></p>
                 </div>
                 <div class="form-group">
-                    <label>Role:</label>
-                    <select th:field="*{role}">
-                        <option th:each="e : ${roles}" th:value="${e}" th:text="${e}"></option>
+                    <label>Miejsce:</label>
+                    <select th:field="*{seat}">
+                        <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
                     </select>
                 </div>
                 <div>
-                    <input class="btn btn-success" type="submit" value="Register"/>
-                    <input class="btn btn-danger" type="reset" value="Reset"/>
-                    <a class="btn btn-primary" href="/">Main Page</a>
+                    <input class="btn btn-success" type="submit" value="Dodaj klienta"/>
+                    <input class="btn btn-danger" type="reset" value="Wyczyść dane"/>
+                    <a class="btn btn-primary" href="/">Strona główna</a>
                 </div>
             </form>
         </div>
     </div>
+</div>
+
+<div th:if="${!isAnySeatFree}">
+    <h1> brak wolnych miejsc</h1>
 </div>
 
 

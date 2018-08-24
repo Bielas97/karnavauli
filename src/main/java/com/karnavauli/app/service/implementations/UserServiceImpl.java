@@ -1,17 +1,20 @@
-package com.karnavauli.app.service;
+package com.karnavauli.app.service.implementations;
 
-import com.karnavauli.app.model.User;
+import com.karnavauli.app.model.enums.Role;
+import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.repository.UserRepository;
+import com.karnavauli.app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
 
@@ -41,5 +44,21 @@ public class UserServiceImpl implements UserService{
                 .stream()
                 .map(u -> modelMapper.map(u, UserDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getUserIdFromUsername(String username) {
+        return userRepository.findByUsername(username).getId();
+    }
+
+    @Override
+    public User getUserFromUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public void changeRole(Long id, Role role) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("nie znaleziono uzytkownika"));
+        user.setRole(role);
     }
 }

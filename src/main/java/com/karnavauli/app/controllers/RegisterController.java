@@ -1,6 +1,6 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.model.Role;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.service.UserService;
 import com.karnavauli.app.validators.UserValidator;
@@ -16,11 +16,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 public class RegisterController {
+
+    //nie wiem o co mi tu chodzilo ????
+    //TODO: generuje id od 1 w bazie a ma generowac poczynajac od liczby wiekszej o 1 niz ostatni rekord
+
     private UserService userService;
     //private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -32,6 +37,14 @@ public class RegisterController {
     @InitBinder
     private void initializeBinder(WebDataBinder webDataBinder) {
         webDataBinder.setValidator(new UserValidator());
+    }
+
+    @GetMapping("/users")
+    public String showUsers(Model model){
+        List<UserDto> users = userService.getAll();
+        users.stream().forEach(e -> e.setPassword(null));
+        model.addAttribute("users", users);
+        return "showUsers";
     }
 
     @GetMapping("/register")

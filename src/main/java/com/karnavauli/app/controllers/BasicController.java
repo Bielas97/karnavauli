@@ -4,10 +4,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+
 @Controller
-public class MyController {
+public class BasicController {
+
     @GetMapping("/")
-    public String welcome() {
+    public String welcome(Model model, Principal principal) {
+        String username = principal.getName();
+        model.addAttribute("user", username);
         return "index";
     }
 
@@ -44,4 +49,5 @@ public class MyController {
         model.addAttribute("error", loginErrorMessage);
         return "loginForm";
     }
+
 }

@@ -6,14 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class UserDto {
+public class TicketDto {
     private Long id;
-    private String username;
-    private String password;
-    private Role role;
-    private String confirmPassword;
+    private String shortName;
+    private String fullName;
+    private Double price;
+    private Boolean isUni;
+    private List<Role> ticketDealers;
+    private String roles;
 }

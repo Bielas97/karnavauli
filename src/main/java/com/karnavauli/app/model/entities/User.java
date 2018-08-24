@@ -1,5 +1,6 @@
-package com.karnavauli.app.model;
+package com.karnavauli.app.model.entities;
 
+import com.karnavauli.app.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
