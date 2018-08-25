@@ -1,10 +1,10 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.service.SeatsService;
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.enums.Seat;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.UserService;
+import com.karnavauli.app.utils.SeatsUtils;
 import com.karnavauli.app.validators.CustomerValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class CustomerController {
     private CustomerService customerService;
     private UserService userService;
-    private SeatsService seatsService;
+    private SeatsUtils seatsUtils;
 
-    public CustomerController(CustomerService customerService, UserService userService, SeatsService seatsService) {
+    public CustomerController(CustomerService customerService, UserService userService, SeatsUtils seatsUtils) {
         this.customerService = customerService;
         this.userService = userService;
-        this.seatsService = seatsService;
+        this.seatsUtils = seatsUtils;
     }
 
     @InitBinder
@@ -36,20 +36,22 @@ public class CustomerController {
         webDataBinder.setValidator(new CustomerValidator());
     }
 
-    @GetMapping("/addCustomer")
-    public String addCustomerGet(Model model) {
-        seatsService.updateSeats();
+    @GetMapping("/customer")
+    public String newCustomer(){
+        return "newCustomer";
+    }
 
-        boolean isAnySeatFree = true;
-        if (seatsService.getAvailableSeats().isEmpty() || seatsService.getAvailableSeats().size() == 0) {
-            isAnySeatFree = false;
-        }
-        System.out.println(isAnySeatFree);
+    @GetMapping("/addCustomer/{amountOfTickets}")
+    public String addCustomerGet(Model model, @PathVariable int amountOfTickets) {
+        seatsUtils.updateSeats();
+
+        System.out.println(amountOfTickets);
 
         model.addAttribute("customerDto", new CustomerDto());
         model.addAttribute("errors", new HashMap<>());
-        model.addAttribute("seats", seatsService.getAvailableSeats());
-        model.addAttribute("isAnySeatFree", isAnySeatFree);
+        model.addAttribute("seats", seatsUtils.getAvailableSeats());
+        model.addAttribute("isAnySeatFree", seatsUtils.isAnySeatFree());
+        model.addAttribute("amountOfTickets", amountOfTickets);
         return "customerForm";
     }
 
@@ -71,12 +73,8 @@ public class CustomerController {
                     .stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getCode));
 
-            seatsService.updateSeats();
-            boolean isAnySeatFree = true;
-            if (seatsService.getAvailableSeats().isEmpty() || seatsService.getAvailableSeats().size() == 0) {
-                isAnySeatFree = false;
-            }
-            System.out.println(isAnySeatFree);
+            seatsUtils.updateSeats();
+            boolean isAnySeatFree = seatsUtils.isAnySeatFree();
 
             model.addAttribute("errors", errors);
             model.addAttribute("customerDto", customerDto);
@@ -85,7 +83,7 @@ public class CustomerController {
             return "redirect:/";
         }
 
-        seatsService.updateSeats();
+        seatsUtils.updateSeats();
 
         customerDto.setUser(userService.getUserFromUsername(principal.getName()));
         customerService.addOrUpdateCustomer(customerDto);
@@ -101,33 +99,29 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/update/{id}")
-    public String customerUpdate(Model model, @PathVariable Long id){
-        seatsService.updateSeats();
+    public String customerUpdate(Model model, @PathVariable Long id) {
+        seatsUtils.updateSeats();
 
-        boolean isAnySeatFree = true;
-        if (seatsService.getAvailableSeats().isEmpty() || seatsService.getAvailableSeats().size() == 0) {
-            isAnySeatFree = false;
-        }
+        boolean isAnySeatFree = seatsUtils.isAnySeatFree();
         model.addAttribute("customer", customerService.getOneCustomer(id).orElseThrow(NullPointerException::new));
         model.addAttribute("errors", new HashMap<>());
-        model.addAttribute("seats", seatsService.getAvailableSeats());
+        model.addAttribute("seats", seatsUtils.getAvailableSeats());
         model.addAttribute("isAnySeatFree", isAnySeatFree);
 
         return "updateCustomer";
     }
 
     @PostMapping("/customer/update")
-    public String currencyUpdatePost(@ModelAttribute CustomerDto customerDto){
+    public String currencyUpdatePost(@ModelAttribute CustomerDto customerDto) {
         customerService.addOrUpdateCustomer(customerDto);
-        seatsService.updateSeats();
+        seatsUtils.updateSeats();
         return "redirect:/showCustomers";
     }
 
     @GetMapping("/customer/remove/{id}")
-    public String customerRemove(@PathVariable Long id)
-    {
+    public String customerRemove(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-        seatsService.updateSeats();
+        seatsUtils.updateSeats();
         return "redirect:/showCustomers";
     }
 }

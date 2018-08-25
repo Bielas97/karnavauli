@@ -1,9 +1,7 @@
 package com.karnavauli.app.service;
 
 import com.karnavauli.app.model.dto.CustomerDto;
-import com.karnavauli.app.model.enums.Seat;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

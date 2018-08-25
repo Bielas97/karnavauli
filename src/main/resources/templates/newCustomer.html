@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Customer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+</head>
+<body>
+
+<div style="background: black">
+    <div id="header">
+        <br>
+        <h2 style="text-align: center; color: white">
+            <a href="/" style="text-decoration: none; color: white;">System Sprzedaży biletów na bal Karnavauli 2019</a>
+        </h2>
+        <br>
+    </div>
+</div>
+
+<br>
+
+<a class="btn btn-primary mr-2" th:href="@{/addCustomer/{amountOfTickets}(amountOfTickets=1)}">1</a>
+<a class="btn btn-primary mr-2" th:href="@{/addCustomer/{amountOfTickets}(amountOfTickets=2)}">2</a>
+<a class="btn btn-primary mr-2" th:href="@{/addCustomer/{amountOfTickets}(amountOfTickets=3)}">3</a>
+<a class="btn btn-primary mr-2" th:href="@{/addCustomer/{amountOfTickets}(amountOfTickets=4)}">4</a>
+
+
+<!--<select th:object="${amountOfTickets}">
+    <option value="1" th:value="${1}">1 bilet</option>
+    <option value="2" th:value="${2}">2 bilety</option>
+    <option value="3" th:value="${3}">3 bilety</option>
+    <option value="4" th:value="${4}">4 bilety </option>
+</select>-->
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+</html>

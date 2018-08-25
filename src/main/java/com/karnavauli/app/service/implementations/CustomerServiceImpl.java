@@ -1,14 +1,12 @@
 package com.karnavauli.app.service.implementations;
 
-import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.model.dto.CustomerDto;
-import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,10 +15,6 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     private ModelMapper modelMapper;
-
-    private List<Seat> allSeats = Arrays.asList(Seat.values());
-    private List<Seat> availableSeats;
-
 
     public CustomerServiceImpl(CustomerRepository customerRepository, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
@@ -49,5 +43,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(c -> modelMapper.map(c, CustomerDto.class))
                 .collect(Collectors.toList());
     }
+
 
 }

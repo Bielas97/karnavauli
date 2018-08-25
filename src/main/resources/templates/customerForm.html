@@ -23,10 +23,16 @@
 
 
 <div class="container" th:if="${isAnySeatFree}">
+
+
+    <!--<div th:each="number : ${amountOfTickets}">
+        <span>TEST</span>
+    </div>-->
+
     <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
             <h2 class="mt-5">Dodaj klienta</h2>
-            <form th:action="@{/addCustomer}" method="post" th:object="${customerDto}" >
+            <form th:each="n : ${amountOfTickets}" th:action="@{/addCustomer}" method="post" th:object="${customerDto}">
                 <input type="text" th:field="*{id}" hidden="hidden"/>
                 <div class="form-group">
                     <label class="h3" for="name">Imię:</label>
@@ -62,8 +68,6 @@
 <div th:if="${!isAnySeatFree}">
     <h1> brak wolnych miejsc</h1>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

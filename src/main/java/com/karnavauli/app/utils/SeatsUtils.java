@@ -1,7 +1,8 @@
-package com.karnavauli.app.service;
+package com.karnavauli.app.utils;
 
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +11,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class SeatsService {
+public class SeatsUtils {
     private List<Seat> allSeats = Arrays.asList(Seat.values());
 
     private CustomerService customerService;
 
     @Autowired
-    public SeatsService(CustomerService customerService) {
+    public SeatsUtils(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    public SeatsService() {
+    public SeatsUtils() {
         updateSeats();
     }
 
@@ -33,6 +34,14 @@ public class SeatsService {
         return allSeats.stream()
                 .filter(seat -> customers.stream().noneMatch(c -> seat.name().equalsIgnoreCase(c.getSeat().name())))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isAnySeatFree() {
+        boolean isAnySeatFree = true;
+        if (getAvailableSeats().isEmpty() || getAvailableSeats().size() == 0) {
+            isAnySeatFree = false;
+        }
+        return isAnySeatFree;
     }
 
     /*public List<Seat> updateSeats2() {
