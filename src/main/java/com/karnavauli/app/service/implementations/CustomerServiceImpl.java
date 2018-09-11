@@ -1,6 +1,7 @@
 package com.karnavauli.app.service.implementations;
 
 import com.karnavauli.app.model.dto.CustomerDto;
+import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.service.CustomerService;
@@ -42,6 +43,14 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(c -> modelMapper.map(c, CustomerDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addOrUpdateManyCustomers(ManyCustomers manyCustomers) {
+        for (int i = 0; i < manyCustomers.getCustomers().size(); i++) {
+            customerRepository.save(modelMapper.map(manyCustomers.getCustomers().get(i), Customer.class));
+        }
+
     }
 
 

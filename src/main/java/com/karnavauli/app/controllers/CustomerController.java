@@ -1,23 +1,16 @@
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.CustomerDto;
-import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.UserService;
 import com.karnavauli.app.utils.SeatsUtils;
-import com.karnavauli.app.validators.CustomerValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class CustomerController {
@@ -31,10 +24,10 @@ public class CustomerController {
         this.seatsUtils = seatsUtils;
     }
 
-    @InitBinder
-    private void initializeBinder(WebDataBinder webDataBinder) {
+    //@InitBinder
+    /*private void initializeBinder(WebDataBinder webDataBinder) {
         webDataBinder.setValidator(new CustomerValidator());
-    }
+    }*/
 
     @GetMapping("/customer")
     public String newCustomer(){
@@ -45,24 +38,34 @@ public class CustomerController {
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets) {
         seatsUtils.updateSeats();
 
-        System.out.println(amountOfTickets);
 
-        model.addAttribute("customerDto", new CustomerDto());
+        model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());
         model.addAttribute("seats", seatsUtils.getAvailableSeats());
+        model.addAttribute("numberOfFreeSeats", seatsUtils.updateSeats().size() + 1);
         model.addAttribute("isAnySeatFree", seatsUtils.isAnySeatFree());
         model.addAttribute("amountOfTickets", amountOfTickets);
+        model.addAttribute("enoughPlaces", true);
+        if(amountOfTickets > seatsUtils.updateSeats().size()){
+            model.addAttribute("notEnoughPlaces", true);
+        }
+        else{
+            model.addAttribute("notEnoughPlaces", false);
+        }
         return "customerForm";
     }
 
     @PostMapping("/addCustomer")
     public String addCustomerPost(
-            @Valid @ModelAttribute CustomerDto customerDto,
-            BindingResult bindingResult,
+            /*@Valid*/ @ModelAttribute ManyCustomers manyCustomers,
+            // BindingResult bindingResult,
             Model model,
             Principal principal
     ) {
-        if (bindingResult.hasErrors()) {
+
+        System.out.println(manyCustomers);
+
+        /*if (bindingResult.hasErrors()) {
             //wyswietlanie errorow
             for (FieldError e : bindingResult.getFieldErrors()) {
                 System.out.println(e);
@@ -83,10 +86,21 @@ public class CustomerController {
             return "redirect:/";
         }
 
-        seatsUtils.updateSeats();
+        seatsUtils.updateSeats();*/
 
-        customerDto.setUser(userService.getUserFromUsername(principal.getName()));
-        customerService.addOrUpdateCustomer(customerDto);
+        //customerService.setManyCustomers(manyCustomers);
+
+        //manycustomers ma miec metode setUsers gdzie do kazdego custmersa daje usera ktory go dodal
+        // customersService ma miec metode addOrUpdateManyCustomers ktora zapisuje manyCustomers
+
+        /*customerDto.setUser(userService.getUserDtoFromUsername(principal.getName()));
+        customerService.addOrUpdateCustomer(customerDto);*/
+
+
+        manyCustomers.setUserDto(userService.getUserDtoFromUsername(principal.getName()));
+        customerService.addOrUpdateManyCustomers(manyCustomers);
+
+
 
         return "redirect:/showCustomers";
     }

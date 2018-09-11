@@ -14,6 +14,7 @@ public interface UserService {
     List<UserDto> getAll();
 
     Long getUserIdFromUsername(String username);
-    User getUserFromUsername(String username);
+    //TODO przerobic na userDto
+    User getUserDtoFromUsername(String username);
     void changeRole(Long id, Role role);
 }

@@ -29,12 +29,14 @@ public class SeatsUtils {
         return updateSeats();
     }
 
+    //zwraca liste dostepnych miejsc
     public List<Seat> updateSeats() {
         List<CustomerDto> customers = customerService.getAll();
         return allSeats.stream()
                 .filter(seat -> customers.stream().noneMatch(c -> seat.name().equalsIgnoreCase(c.getSeat().name())))
                 .collect(Collectors.toList());
     }
+
 
     public boolean isAnySeatFree() {
         boolean isAnySeatFree = true;

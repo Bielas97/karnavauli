@@ -21,53 +21,49 @@
 
 <br>
 
+<div th:if="enoughPlaces">
 
-<div class="container" th:if="${isAnySeatFree}">
+    <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
+        <!--if numberOfFreeSeats < amountOfTickets-->
 
 
-    <!--<div th:each="number : ${amountOfTickets}">
-        <span>TEST</span>
-    </div>-->
+        <!--<div th:each="number : ${amountOfTickets}">
+            <span>TEST</span>
+        </div>-->
 
-    <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
-            <h2 class="mt-5">Dodaj klienta</h2>
-            <form th:each="n : ${amountOfTickets}" th:action="@{/addCustomer}" method="post" th:object="${customerDto}">
-                <input type="text" th:field="*{id}" hidden="hidden"/>
+            <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
+                <ul class="my-5 list-unstyled">
+                    <li th:each="c, stat : *{customers}">
+                        <div class="form-group">
+                            <label th:for="'name' + ${stat.index}">NAME:</label>
+                            <input th:id="'name' + ${stat.index}" type="text" class="form-control"
+                                   th:field="*{customers[__${stat.index}__].name}"/>
+                        </div>
+                        <div class="form-group">
+                            <label th:for="'seat' + ${stat.index}">Miejsce:</label>
+                            <select th:id="'seat' + ${stat.index}" class="form-control"
+                                    th:field="*{customers[__${stat.index}__].seat}">
+                                <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
+                            </select>
+                        </div>
+                    </li>
+                </ul>
                 <div class="form-group">
-                    <label class="h3" for="name">Imię:</label>
-                    <input id="name" class="form-control" type="text" th:field="*{name}"/>
-                </div>
-                <div class="form-group">
-                    <label class="h3" for="surname">Nazwisko:</label>
-                    <input id="surname" class="form-control" th:field="*{surname}"/>
-                </div>
-                <div class="form-group">
-                    <label class="h3" for="hireDate">E-mail:</label>
-                    <input id="hireDate" class="form-control" th:field="*{mail}"/>
-                </div>
-                <div th:if="${errors.containsKey('mail')}">
-                    <p class="text-danger" th:text="${errors.get('mail')}"></p>
-                </div>
-                <div class="form-group">
-                    <label>Miejsce:</label>
-                    <select th:field="*{seat}">
-                        <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
-                    </select>
-                </div>
-                <div>
-                    <input class="btn btn-success" type="submit" value="Dodaj klienta"/>
-                    <input class="btn btn-danger" type="reset" value="Wyczyść dane"/>
-                    <a class="btn btn-primary" href="/">Strona główna</a>
+                    <button class="btn btn-success btn-lg" type="submit">SEND</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<div th:if="${!isAnySeatFree}">
-    <h1> brak wolnych miejsc</h1>
+<div class="container" th:if="${notEnoughPlaces}">
+    <h1>brak wolnych miejsc dla tej ilosci klientów</h1>
 </div>
+
+<!--<div class="container" th:if="${numberOfFreeSeats} &le; ${amountOfTickets}">
+    <h1> brak wolnych miejsc</h1>
+</div>-->
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
