@@ -30,14 +30,13 @@ public class CustomerController {
     }*/
 
     @GetMapping("/customer")
-    public String newCustomer(){
+    public String newCustomer() {
         return "newCustomer";
     }
 
     @GetMapping("/addCustomer/{amountOfTickets}")
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets) {
         seatsUtils.updateSeats();
-
 
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());
@@ -46,10 +45,9 @@ public class CustomerController {
         model.addAttribute("isAnySeatFree", seatsUtils.isAnySeatFree());
         model.addAttribute("amountOfTickets", amountOfTickets);
         model.addAttribute("enoughPlaces", true);
-        if(amountOfTickets > seatsUtils.updateSeats().size()){
+        if (amountOfTickets > seatsUtils.updateSeats().size()) {
             model.addAttribute("notEnoughPlaces", true);
-        }
-        else{
+        } else {
             model.addAttribute("notEnoughPlaces", false);
         }
         return "customerForm";
@@ -58,9 +56,9 @@ public class CustomerController {
     @PostMapping("/addCustomer")
     public String addCustomerPost(
             /*@Valid*/ @ModelAttribute ManyCustomers manyCustomers,
-            // BindingResult bindingResult,
-            Model model,
-            Principal principal
+                       // BindingResult bindingResult,
+                       Model model,
+                       Principal principal
     ) {
 
         System.out.println(manyCustomers);
@@ -101,16 +99,15 @@ public class CustomerController {
         customerService.addOrUpdateManyCustomers(manyCustomers);
 
 
-
         return "redirect:/showCustomers";
     }
 
     @GetMapping("/showCustomers")
     public String customers(Model model) {
         model.addAttribute("customers", customerService.getAll());
-
         return "customers";
     }
+
 
     @GetMapping("/customer/update/{id}")
     public String customerUpdate(Model model, @PathVariable Long id) {

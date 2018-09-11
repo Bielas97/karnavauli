@@ -5,8 +5,8 @@
     <title>Customers</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
-
+    <link href="css/customersStyles.css"
+          rel="stylesheet">
 </head>
 <body>
 <div style="background: black">
@@ -28,7 +28,39 @@
                 <h3>Akcje</h3>
             </a>
             <hr>
-            <a class="btn btn-success" th:href="@{/addCustomer/1}">Dodaj</a>
+            <!--<a class="btn btn-success" th:href="@{/addCustomer/1}">Dodaj</a>-->
+            <button id="myBtn" class="btn btn-success">Dodaj</button>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
+                        <fieldset>
+                            <legend>Liczba biletów</legend>
+                            <hr>
+                            <form onsubmit='makePath(this);'>
+                                <select id="Opt">
+                                    <option value='addCustomer/1'>1 bilet</option>
+                                    <option value='addCustomer/2'>2 bilety</option>
+                                    <option value='addCustomer/3'>3 bilety</option>
+                                    <option value='addCustomer/4'>4 bilety</option>
+                                </select>
+                                <br>
+                                <br>
+                                <div class="form-group">
+                                    <button class="btn btn-success">Przejdź dalej</button>
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                </div>
+
+            </div>
+
+            <script src="js/customersScript.js"></script>
+
         </div>
         <div class="col-8">
 
@@ -56,10 +88,14 @@
                     <td th:text="${c.phoneNumber}"></td>
                     <td th:text="${c.user.username}"></td>
                     <td>
-                        <a class="btn btn-primary mr-2" onclick="return confirm('UWAGA! zmieniasz dane klienta. Czy chcesz kontynuować?');" th:href="@{/customer/update/{id}(id=${c.id})}">zmień</a>
+                        <a class="btn btn-primary mr-2"
+                           onclick="return confirm('UWAGA! zmieniasz dane klienta. Czy chcesz kontynuować?');"
+                           th:href="@{/customer/update/{id}(id=${c.id})}">zmień</a>
                     </td>
                     <td>
-                        <a class="btn btn-danger mr-2" onclick="return confirm('UWAGA! usuwasz klienta. Czy chcesz kontynuować?');" th:href="@{/customer/remove/{id}(id=${c.id})}">usuń</a>
+                        <a class="btn btn-danger mr-2"
+                           onclick="return confirm('UWAGA! usuwasz klienta. Czy chcesz kontynuować?');"
+                           th:href="@{/customer/remove/{id}(id=${c.id})}">usuń</a>
                     </td>
                 </tr>
                 </tbody>
@@ -68,9 +104,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
