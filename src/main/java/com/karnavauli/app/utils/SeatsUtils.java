@@ -1,18 +1,22 @@
 package com.karnavauli.app.utils;
 
 import com.karnavauli.app.model.dto.CustomerDto;
-import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.model.enums.KvTable;
 import com.karnavauli.app.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 public class SeatsUtils {
-    private List<Seat> allSeats = Arrays.asList(Seat.values());
+    private List<KvTable> allKvTables = Arrays.asList(KvTable.values());
+    //mapa mowiaca ile osob wybralo dany stolik
+    private Map<KvTable, Integer> numberOfTableClicks = new HashMap<>();
 
     private CustomerService customerService;
 
@@ -22,19 +26,77 @@ public class SeatsUtils {
     }
 
     public SeatsUtils() {
-        updateSeats();
+        updateTables();
     }
 
-    public List<Seat> getAvailableSeats() {
-        return updateSeats();
+    public List<KvTable> getAvailableSeats() {
+        return updateTables();
     }
 
-    //zwraca liste dostepnych miejsc
-    public List<Seat> updateSeats() {
+    public Map<KvTable, Integer> getNumberOfTableClicks() {
+        return numberOfTableClicks;
+    }
+
+    //organizuje mape numberOfClicks
+    // przypisuje kazdemu stolikowi liczbe klikniec customersa
+    public void putTable() {
+        for (CustomerDto customerDto : customerService.getAll()) {
+            if (numberOfTableClicks.get(customerDto.getKvTable()) == null || numberOfTableClicks.get(customerDto.getKvTable()) == 0) {
+                numberOfTableClicks.put(customerDto.getKvTable(), 1);
+            } else {
+                numberOfTableClicks.put(customerDto.getKvTable(), numberOfTableClicks.get(customerDto.getKvTable()) + 1);
+            }
+        }
+    }
+
+    /**
+     * zwraca liste stolikow ktore nie zostaly jescze wybrane(ktorych nie ma w bazie)
+     *
+     * @return
+     */
+    public List<KvTable> updateTables() {
         List<CustomerDto> customers = customerService.getAll();
-        return allSeats.stream()
-                .filter(seat -> customers.stream().noneMatch(c -> seat.name().equalsIgnoreCase(c.getSeat().name())))
+        return allKvTables.stream()
+                .filter(kvTable -> customers.stream().noneMatch(c -> kvTable.name().equalsIgnoreCase(c.getKvTable().name())))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * kazdemu stolikowi przypisuje dana liczbe miejsc
+     *
+     * @return
+     */
+    private Map<KvTable, Integer> initiliazeSeats() {
+        Map<KvTable, Integer> seats = new HashMap<>();
+        List<KvTable> allTables = Arrays.asList(KvTable.values());
+        for (KvTable table : allTables) {
+            //dawanie kazdemu stolikowi z parteru 10 miejsc
+            if ("0".equals(String.valueOf(table.toString().charAt(1)))) {
+                seats.put(table, 10);
+            }
+            //dawanie reszcie stolikow 8 miejsc
+            else {
+                seats.put(table, 8);
+            }
+        }
+        return seats;
+    }
+
+    //TODO mapa ma zwracac liczbe wolnych miejsc przy kazdym ze stolikow
+    //TODO np: A01, 5 - jest 5 wolnych miejsc przy stoliku A01
+    public Map<KvTable, Integer> getFreeSeatsInTables() {
+        List<KvTable> tables = Arrays.asList(KvTable.values());
+        Map<KvTable, Integer> freeSeats = new HashMap<>();
+        Map<KvTable, Integer> seats = initiliazeSeats();
+
+        //TODO
+        //rzuca nulla
+        // trzeba dodac to samo co w linijkach 44-48
+        for (KvTable table : tables) {
+            freeSeats.put(table, seats.get(table) - numberOfTableClicks.get(table));
+        }
+
+        return freeSeats;
     }
 
 
@@ -46,21 +108,23 @@ public class SeatsUtils {
         return isAnySeatFree;
     }
 
-    /*public List<Seat> updateSeats2() {
+
+
+    /*public List<KvTable> updateSeats2() {
         List<CustomerDto> customers = customerService.getAll();
         return customers.stream()
-                .filter(c -> allSeats.stream().anyMatch(seat -> seat.name().equalsIgnoreCase(c.getSeat().name())))
-                .map(CustomerDto::getSeat)
+                .filter(c -> allKvTables.stream().anyMatch(kvTable -> kvTable.name().equalsIgnoreCase(c.getKvTable().name())))
+                .map(CustomerDto::getKvTable)
                 .collect(Collectors.toList());
     }*/
 
-   /* public List<Seat> updateSeatsByKuba() {
+   /* public List<KvTable> updateSeatsByKuba() {
         List<CustomerDto> customers = customerService.getAll();
-        return allSeats
+        return allKvTables
                 .stream()
-                .filter(seat -> {
+                .filter(kvTable -> {
                     for (CustomerDto c : customers) {
-                        if (c.getSeat().equals(seat)) {
+                        if (c.getKvTable().equals(kvTable)) {
                             return false;
                         }
                     }

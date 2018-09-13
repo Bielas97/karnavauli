@@ -2,6 +2,7 @@ package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
+import com.karnavauli.app.model.enums.KvTable;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.UserService;
 import com.karnavauli.app.utils.SeatsUtils;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @Controller
 public class CustomerController {
@@ -36,16 +39,26 @@ public class CustomerController {
 
     @GetMapping("/addCustomer/{amountOfTickets}")
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets) {
-        seatsUtils.updateSeats();
+        //seatsUtils.updateTables();
+        seatsUtils.putTable();
+        for (Map.Entry entry : seatsUtils.getFreeSeatsInTables().entrySet()) {
+            System.out.println(entry.getKey() + ", " + entry.getValue());
+        }
+
+
+        //tymczasowo
+        int size = 1000;
 
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());
         model.addAttribute("seats", seatsUtils.getAvailableSeats());
-        model.addAttribute("numberOfFreeSeats", seatsUtils.updateSeats().size() + 1);
+        model.addAttribute("numberOfFreeSeats", size);
+        //model.addAttribute("numberOfFreeSeats", seatsUtils.updateTables().size() + 1);
         model.addAttribute("isAnySeatFree", seatsUtils.isAnySeatFree());
         model.addAttribute("amountOfTickets", amountOfTickets);
         model.addAttribute("enoughPlaces", true);
-        if (amountOfTickets > seatsUtils.updateSeats().size()) {
+        //if (amountOfTickets > seatsUtils.updateTables().size()) {
+        if (amountOfTickets > size) {
             model.addAttribute("notEnoughPlaces", true);
         } else {
             model.addAttribute("notEnoughPlaces", false);
@@ -74,17 +87,17 @@ public class CustomerController {
                     .stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getCode));
 
-            seatsUtils.updateSeats();
+            seatsUtils.updateTables();
             boolean isAnySeatFree = seatsUtils.isAnySeatFree();
 
             model.addAttribute("errors", errors);
             model.addAttribute("customerDto", customerDto);
-            model.addAttribute("seats", Seat.values());
+            model.addAttribute("seats", KvTable.values());
             model.addAttribute("isAnySeatFree", isAnySeatFree);
             return "redirect:/";
         }
 
-        seatsUtils.updateSeats();*/
+        seatsUtils.updateTables();*/
 
         //customerService.setManyCustomers(manyCustomers);
 
@@ -94,6 +107,8 @@ public class CustomerController {
         /*customerDto.setUser(userService.getUserDtoFromUsername(principal.getName()));
         customerService.addOrUpdateCustomer(customerDto);*/
 
+        //manyCustomers.getCustomers().forEach(customerDto -> seatsUtils.putTable(customerDto.getKvTable()));
+        seatsUtils.putTable();
 
         manyCustomers.setUserDto(userService.getUserDtoFromUsername(principal.getName()));
         customerService.addOrUpdateManyCustomers(manyCustomers);
@@ -111,7 +126,7 @@ public class CustomerController {
 
     @GetMapping("/customer/update/{id}")
     public String customerUpdate(Model model, @PathVariable Long id) {
-        seatsUtils.updateSeats();
+        //seatsUtils.updateTables();
 
         boolean isAnySeatFree = seatsUtils.isAnySeatFree();
         model.addAttribute("customer", customerService.getOneCustomer(id).orElseThrow(NullPointerException::new));
@@ -125,14 +140,14 @@ public class CustomerController {
     @PostMapping("/customer/update")
     public String currencyUpdatePost(@ModelAttribute CustomerDto customerDto) {
         customerService.addOrUpdateCustomer(customerDto);
-        seatsUtils.updateSeats();
+        seatsUtils.updateTables();
         return "redirect:/showCustomers";
     }
 
     @GetMapping("/customer/remove/{id}")
     public String customerRemove(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-        seatsUtils.updateSeats();
+        seatsUtils.updateTables();
         return "redirect:/showCustomers";
     }
 }

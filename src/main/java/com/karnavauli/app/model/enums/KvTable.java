@@ -1,6 +1,6 @@
 package com.karnavauli.app.model.enums;
 
-public enum Seat {
+public enum KvTable {
     //Pierwszy znak mówi o sektorze, drugi o piętrze, trzeci o numerze miejsca
     // na przyklad: B23 - sektor B piętro drugie miejscje 3
 

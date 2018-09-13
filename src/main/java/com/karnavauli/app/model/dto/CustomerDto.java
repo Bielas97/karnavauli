@@ -1,7 +1,7 @@
 package com.karnavauli.app.model.dto;
 
 import com.karnavauli.app.model.entities.User;
-import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.model.enums.KvTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class CustomerDto {
     private String indexNumber;
     //TODO: czy tu powinien byc user czy userDto?????
     private User user;
-    private Seat seat;
+    private KvTable kvTable;
 
     private int numberOfTickets;
 }

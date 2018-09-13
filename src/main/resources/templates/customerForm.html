@@ -47,9 +47,9 @@
                                        th:field="*{customers[__${stat.index}__].name}"/>
                             </div>
                             <div class="form-group">
-                                <label th:for="'seat' + ${stat.index}">Miejsce:</label>
-                                <select th:id="'seat' + ${stat.index}" class="form-control"
-                                        th:field="*{customers[__${stat.index}__].seat}">
+                                <label th:for="'kvTable' + ${stat.index}">Miejsce:</label>
+                                <select th:id="'kvTable' + ${stat.index}" class="form-control"
+                                        th:field="*{customers[__${stat.index}__].kvTable}">
                                     <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
                                 </select>
                             </div>
@@ -70,9 +70,6 @@
     <h1>brak wolnych miejsc dla tej ilosci klientów</h1>
 </div>
 
-<!--<div class="container" th:if="${numberOfFreeSeats} &le; ${amountOfTickets}">
-    <h1> brak wolnych miejsc</h1>
-</div>-->
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

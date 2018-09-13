@@ -1,6 +1,6 @@
 package com.karnavauli.app.model.entities;
 
-import com.karnavauli.app.model.enums.Seat;
+import com.karnavauli.app.model.enums.KvTable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,5 +32,5 @@ public class Customer {
     private User user;
     @Column(name = "miejsce")
     @Enumerated(EnumType.STRING)
-    private Seat seat;
+    private KvTable kvTable;
 }
