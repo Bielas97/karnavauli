@@ -9,6 +9,7 @@
 </head>
 <body>
 
+
 <div style="background: black">
     <div id="header">
         <br>
@@ -24,36 +25,44 @@
 <div th:if="enoughPlaces">
 
     <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
-        <!--if numberOfFreeSeats < amountOfTickets-->
 
 
-        <!--<div th:each="number : ${amountOfTickets}">
-            <span>TEST</span>
-        </div>-->
 
-        <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
-            <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
-                <ul class="my-5 list-unstyled">
-                    <li th:each="c, stat : *{customers}">
-                        <div class="form-group">
-                            <label th:for="'name' + ${stat.index}">NAME:</label>
-                            <input th:id="'name' + ${stat.index}" type="text" class="form-control"
-                                   th:field="*{customers[__${stat.index}__].name}"/>
-                        </div>
-                        <div class="form-group">
-                            <label th:for="'seat' + ${stat.index}">Miejsce:</label>
-                            <select th:id="'seat' + ${stat.index}" class="form-control"
-                                    th:field="*{customers[__${stat.index}__].seat}">
-                                <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
-                <div class="form-group">
-                    <button class="btn btn-success btn-lg" type="submit">SEND</button>
-                </div>
-            </form>
+        <div class="row">
+
+            <div class="col-5">
+                <img src="/img/map_hall.jpg" width="400"/>
+                <img src="/img/map_1floor.jpg" width="400"/>
+                <img src="/img/map_2floor.jpg" width="400"/>
+            </div>
+
+            <div class="col-7">
+                <!--<div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">-->
+                <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
+                    <ul class="my-5 list-unstyled">
+                        <li th:each="c, stat : *{customers}">
+                            <div class="form-group">
+                                <label th:for="'name' + ${stat.index}">NAME:</label>
+                                <input th:id="'name' + ${stat.index}" type="text" class="form-control"
+                                       th:field="*{customers[__${stat.index}__].name}"/>
+                            </div>
+                            <div class="form-group">
+                                <label th:for="'seat' + ${stat.index}">Miejsce:</label>
+                                <select th:id="'seat' + ${stat.index}" class="form-control"
+                                        th:field="*{customers[__${stat.index}__].seat}">
+                                    <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
+                                </select>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-lg" type="submit">SEND</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
+
     </div>
 </div>
 
