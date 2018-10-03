@@ -62,7 +62,7 @@ public class SeatsUtils {
     }
 
     /**
-     * kazdemu stolikowi przypisuje dana liczbe miejsc
+     * kazdemu stolikowi przypisuje dana (maksymalna) liczbe miejsc
      *
      * @return
      */
@@ -82,18 +82,23 @@ public class SeatsUtils {
         return seats;
     }
 
-    //TODO mapa ma zwracac liczbe wolnych miejsc przy kazdym ze stolikow
-    //TODO np: A01, 5 - jest 5 wolnych miejsc przy stoliku A01
+    // mapa ma zwracac liczbe wolnych miejsc przy kazdym ze stolikow
+    // np: A01, 5 - jest 5 wolnych miejsc przy stoliku A01
     public Map<KvTable, Integer> getFreeSeatsInTables() {
         List<KvTable> tables = Arrays.asList(KvTable.values());
         Map<KvTable, Integer> freeSeats = new HashMap<>();
-        Map<KvTable, Integer> seats = initiliazeSeats();
+        Map<KvTable, Integer> seats = initiliazeSeats(); // tutaj mam liczbe zajetych miejsc dla kazdego stolika
 
-        //TODO
-        //rzuca nulla
-        // trzeba dodac to samo co w linijkach 44-48
+        // freeseats.put(table, seats.get(table) - numberofclikcs.get(table))
+        // czyli MAX miejsc w danym stoliku - seats.get(table)
+        //zajete miejsca - numberOfClicks.get(table)
         for (KvTable table : tables) {
-            freeSeats.put(table, seats.get(table) - numberOfTableClicks.get(table));
+            //if(freeSeats.get(table) == null || freeSeats.get(table) == 0){
+            if (!numberOfTableClicks.containsKey(table) || numberOfTableClicks.get(table) == 0) {
+                freeSeats.put(table, seats.get(table));
+            } else {
+                freeSeats.put(table, seats.get(table) - numberOfTableClicks.get(table));
+            }
         }
 
         return freeSeats;
