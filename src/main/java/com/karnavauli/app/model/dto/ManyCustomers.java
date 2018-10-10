@@ -1,7 +1,8 @@
 package com.karnavauli.app.model.dto;
 
 import com.karnavauli.app.model.entities.User;
-import lombok.AllArgsConstructor;
+import com.karnavauli.app.service.KvTableService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,24 @@ import java.util.Objects;
 
 public class ManyCustomers {
     private List<CustomerDto> customers;
+    private Long kvTableId;
+
+
+    public Long getKvTableId() {
+        return kvTableId;
+    }
+
+    public void setKvTableId(Long kvTableId) {
+        this.kvTableId = kvTableId;
+    }
+
+    public void setKvTable(KvTableDto kvTable) {
+        customers.forEach(kvTableDto -> kvTableDto.setKvTable(kvTable)
+        );
+    }
 
     public void setUserDto(User user) {
-        for (int i = 0; i < customers.size(); i++) {
-            customers.get(i).setUser(user);
-        }
+        customers.forEach(customerDto -> customerDto.setUser(user));
     }
 
     public ManyCustomers() {
@@ -33,7 +47,6 @@ public class ManyCustomers {
     public void setCustomers(List<CustomerDto> customers) {
         this.customers = customers;
     }
-
 
 
     @Override

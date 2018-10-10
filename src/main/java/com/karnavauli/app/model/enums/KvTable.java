@@ -1,8 +1,13 @@
+/*
 package com.karnavauli.app.model.enums;
 
 public enum KvTable {
     //Pierwszy znak mówi o sektorze, drugi o piętrze, trzeci o numerze miejsca
     // na przyklad: B23 - sektor B piętro drugie miejscje 3
+
+    //RAZEM MIEJSC = 43 * 10 + 384 = 814
+
+    //TODO: lepiej do bazy danych, nazwa stolika, liczba miejsc zajetych
 
     //PARTER
     A01, A02, A03, A04, A05, A06, A07, A08, A09, A010, A011, A012,
@@ -21,3 +26,4 @@ public enum KvTable {
     D21, D22, D23, D24, D25, D26
 
 }
+*/

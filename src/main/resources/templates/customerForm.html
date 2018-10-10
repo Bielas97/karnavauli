@@ -48,10 +48,25 @@
                             </div>
                             <div class="form-group">
                                 <label th:for="'kvTable' + ${stat.index}">Miejsce:</label>
-                                <select th:id="'kvTable' + ${stat.index}" class="form-control"
-                                        th:field="*{customers[__${stat.index}__].kvTable}">
-                                    <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
+
+                                <!--BLAD JEST PONIZEJ!!!!!!-->
+
+                                <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
+                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
                                 </select>
+
+                                <!--<select th:id="'kvTable'" class="form-control" th:field="*{customers[__${stat.index}__].kvTable.id}">
+                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
+                                </select>-->
+
+
+
+                                <!--<tr th:each="instance : ${analysis.instanceMap}">
+                                    <td th:text="${instance.key}">keyvalue</td>
+                                    <td th:text="${instance.value.numOfData}">num</td>
+                                </tr>-->
+
+
                             </div>
                         </li>
                     </ul>

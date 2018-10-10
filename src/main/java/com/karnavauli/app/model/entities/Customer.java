@@ -1,6 +1,6 @@
 package com.karnavauli.app.model.entities;
 
-import com.karnavauli.app.model.enums.KvTable;
+import com.karnavauli.app.model.dto.KvTableDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +30,7 @@ public class Customer {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "miejsce")
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "kvTable_id")
     private KvTable kvTable;
 }
