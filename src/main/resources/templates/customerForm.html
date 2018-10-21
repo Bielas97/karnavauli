@@ -40,34 +40,28 @@
                 <!--<div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">-->
                 <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
                     <ul class="my-5 list-unstyled">
+
+                        <div class="form-group">
+                            <label th:for="'kvTable'">Dostępne stoliki dla wybranej ilości osób:</label>
+
+                            <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
+                                <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
+                            </select>
+
+                        </div>
+
                         <li th:each="c, stat : *{customers}">
                             <div class="form-group">
-                                <label th:for="'name' + ${stat.index}">NAME:</label>
+                                <label th:for="'name' + ${stat.index}">Imię:</label>
                                 <input th:id="'name' + ${stat.index}" type="text" class="form-control"
                                        th:field="*{customers[__${stat.index}__].name}"/>
                             </div>
                             <div class="form-group">
-                                <label th:for="'kvTable' + ${stat.index}">Miejsce:</label>
-
-                                <!--BLAD JEST PONIZEJ!!!!!!-->
-
-                                <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
-                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
-                                </select>
-
-                                <!--<select th:id="'kvTable'" class="form-control" th:field="*{customers[__${stat.index}__].kvTable.id}">
-                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
-                                </select>-->
-
-
-
-                                <!--<tr th:each="instance : ${analysis.instanceMap}">
-                                    <td th:text="${instance.key}">keyvalue</td>
-                                    <td th:text="${instance.value.numOfData}">num</td>
-                                </tr>-->
-
-
+                                <label th:for="surname">Nazwisko:</label>
+                                <input th:id="surname" type="text" class="form-control"
+                                        th:field="*{customers[__${stat.index}__].surname}"/>
                             </div>
+
                         </li>
                     </ul>
                     <div class="form-group">

@@ -22,8 +22,8 @@ public class ManyCustomers {
     }
 
     public void setKvTable(KvTableDto kvTable) {
-        customers.forEach(kvTableDto -> kvTableDto.setKvTable(kvTable)
-        );
+        customers.forEach(kvTableDto -> kvTableDto.setKvTable(kvTable));
+
     }
 
     public void setUserDto(User user) {

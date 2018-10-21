@@ -52,7 +52,7 @@
                     <td th:text="${c.fullName}"></td>
                     <td th:text="${c.price}"></td>
                     <td th:text="${c.isUni}"></td>
-                    <td th:text="${c.roles}"></td>
+                    <td th:text="${c.ticketDealers}"></td>
                     <td>
                         <a class="btn btn-primary mr-2" onclick="return confirm('UWAGA! zmieniasz dane biletu. Czy chcesz kontynuować?');" th:href="@{/ticket/update/{id}(id=${c.id})}">zmień</a>
                     </td>

@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Builder
 public class KvTable {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
     @Id
     private Long id;
     private String name;

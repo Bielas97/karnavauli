@@ -34,9 +34,10 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
         //czytanie z bazy uzytkownikow
-        //UWAGA USER O USERNAME="USER" JEST TYLKO DO TESTOWANIA
-        for(int i=1; i<=userService.getAll().size(); i++){
-            UserDto userDto = userService.getOneUser((long) i).get();
+        for(int i=0; i<userService.getAll().size(); i++){
+//            UserDto userDtos = userService.getOneUser((long) i).get();
+            UserDto us = userService.getAll().get(i);
+            UserDto userDto = userService.getOneUser(us.getId()).get();
             auth
                     .inMemoryAuthentication()
                     .withUser(userDto.getUsername()).password(userDto.getPassword()).roles(String.valueOf(userDto.getRole()));
@@ -60,13 +61,11 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/user").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
-                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN), String.valueOf(Role.USER),
-                    String.valueOf(Role.SGSP_ADMIN)) //strona dla kazdego
+                /*.antMatchers("/user").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
+                   String.valueOf(Role.USER)) //strona dla kazdego
                 .antMatchers("/admin").hasAnyRole(String.valueOf(Role.CEO)) //strona tylko dla CEO
-                .antMatchers("/testUczelnie").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
-                    String.valueOf(Role.SGGW_ADMIN), String.valueOf(Role.LAZARSKI_ADMIN),
-                    String.valueOf(Role.SGSP_ADMIN)) //strona dla uczlenianych adminow
+                .antMatchers("/testUczelnie").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN))
+                //strona dla uczlenianych adminow*/
                 .antMatchers("/register").hasAnyRole(String.valueOf(Role.CEO)) // strona tylko dla CEO
                 .antMatchers("/ticket/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/ticket/remove/{id}").hasAnyRole(String.valueOf(Role.CEO))

@@ -1,6 +1,7 @@
 package com.karnavauli.app.service;
 
 import com.karnavauli.app.model.dto.KvTableDto;
+import com.karnavauli.app.model.dto.ManyCustomers;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,9 @@ public interface KvTableService {
     int getAllFreeSeats();
     boolean isAnySeatFree();
     List<KvTableDto> getFreeTables();
+    List<KvTableDto> getFreeTablesForAmountOfPeople(int amountOfPeople);
     void incrementOccupiedPlaces(Long id, int size);
     void decrementOccupiedPlaces(Long id);
+
+    List<KvTableDto> getFreeTablesPlusCurrentTable(ManyCustomers manyCustomers);
 }

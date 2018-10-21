@@ -1,5 +1,6 @@
 package com.karnavauli.app.service.implementations;
 
+import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.TicketDto;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.repository.TicketRepository;
@@ -38,19 +39,23 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketDto> getAll() {
-        List<TicketDto> tickets = ticketRepository.findAll()
+        /*List<TicketDto> tickets = ticketRepository.findAll()
                 .stream()
                 .map(t -> modelMapper.map(t, TicketDto.class))
                 .collect(Collectors.toList());
 
-          /*all.forEach(el -> {
+          *//*all.forEach(el -> {
             List<Role> ticketDealers = el.getTicketDealers();
             String collect = ticketDealers.stream().map(Enum::name).collect(Collectors.joining(","));
             el.setRoles(collect);
-        });*/
+        });*//*
 
         return tickets.stream()
                 .map(this::setRolesWithDelimiter)
+                .collect(Collectors.toList());*/
+        return ticketRepository.findAll()
+                .stream()
+                .map(c -> modelMapper.map(c, TicketDto.class))
                 .collect(Collectors.toList());
     }
 

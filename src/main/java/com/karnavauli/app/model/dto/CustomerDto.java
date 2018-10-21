@@ -23,7 +23,10 @@ public class CustomerDto {
     private User user;
     private KvTableDto kvTable;
 
-    private int numberOfTickets;
+    //tylko do formularza updateujacego customersa
+
+
+    private Integer numberOfTickets;
 
     @Override
     public boolean equals(Object o) {
@@ -60,6 +63,7 @@ public class CustomerDto {
                 ", numberOfTickets=" + numberOfTickets +
                 '}';
     }
+
 
     public Long getId() {
         return id;
@@ -129,7 +133,7 @@ public class CustomerDto {
         return numberOfTickets;
     }
 
-    public void setNumberOfTickets(int numberOfTickets) {
+    public void setNumberOfTickets(Integer numberOfTickets) {
         this.numberOfTickets = numberOfTickets;
     }
 }

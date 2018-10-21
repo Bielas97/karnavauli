@@ -1,6 +1,6 @@
 package com.karnavauli.app.model.entities;
 
-import com.karnavauli.app.model.dto.KvTableDto;
+import com.karnavauli.app.model.CustomerListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Builder
+@EntityListeners(CustomerListener.class)
 public class Customer {
     @Id
     @GeneratedValue

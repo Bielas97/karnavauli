@@ -1,6 +1,8 @@
 package com.karnavauli.app.service.implementations;
 
+import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.KvTableDto;
+import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.repository.KvTableRepository;
 import com.karnavauli.app.service.CustomerService;
@@ -108,6 +110,16 @@ public class KvTableServiceImpl implements KvTableService {
     }
 
     @Override
+    public List<KvTableDto> getFreeTablesForAmountOfPeople(int amountOfPeople) {
+        return getAll()
+                .stream()
+                .filter(kvTableDto -> kvTableDto.getMaxPlaces() - kvTableDto.getOccupiedPlaces() != 0 &&
+                        kvTableDto.getMaxPlaces() - kvTableDto.getOccupiedPlaces() >= amountOfPeople)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public void incrementOccupiedPlaces(Long id, int size) {
         Optional<KvTable> kvTable = kvTableRepository.findById(id);
         for (int i = 0; i < size; i++) {
@@ -120,5 +132,15 @@ public class KvTableServiceImpl implements KvTableService {
     public void decrementOccupiedPlaces(Long id) {
         Optional<KvTable> kvTable = kvTableRepository.findById(id);
         kvTable.ifPresent((kv) -> kv.setOccupiedPlaces(kvTable.get().getOccupiedPlaces() - 1));
+    }
+
+    @Override
+    public List<KvTableDto> getFreeTablesPlusCurrentTable(ManyCustomers manyCustomers) {
+        List<KvTableDto> freeTablesPlusCurrenTable = getFreeTables();
+        CustomerDto cus = manyCustomers.getCustomers().get(0);
+        if (cus.getKvTable().getMaxPlaces() - cus.getKvTable().getOccupiedPlaces() == 0) {
+            freeTablesPlusCurrenTable.add(0, manyCustomers.getCustomers().get(0).getKvTable());
+        }
+        return freeTablesPlusCurrenTable;
     }
 }
