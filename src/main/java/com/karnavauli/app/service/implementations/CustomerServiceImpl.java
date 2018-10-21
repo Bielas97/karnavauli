@@ -3,15 +3,19 @@ package com.karnavauli.app.service.implementations;
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
+import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.repository.KvTableRepository;
 import com.karnavauli.app.service.CustomerService;
+import com.karnavauli.app.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +25,13 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     private KvTableRepository kvTableRepository;
+    private UserService userService;
     private ModelMapper modelMapper;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, KvTableRepository kvTableRepository, ModelMapper modelMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, KvTableRepository kvTableRepository, UserService userService, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
         this.kvTableRepository = kvTableRepository;
+        this.userService = userService;
         this.modelMapper = modelMapper;
     }
 
@@ -44,6 +50,9 @@ public class CustomerServiceImpl implements CustomerService {
         table.setOccupiedPlaces(table.getOccupiedPlaces() - 1);
         kvTableRepository.save(table);
         customerRepository.deleteById(id);
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        UserDto userDto = modelMapper.map(userService.getUserDtoFromUsername(principal.getName()), UserDto.class);
+        userService.incrementNumberOfTickets(userDto);
     }
 
     @Override
@@ -67,6 +76,11 @@ public class CustomerServiceImpl implements CustomerService {
             kvTableRepository.save(table);
             customerRepository.save(modelMapper.map(manyCustomers.getCustomers().get(i), Customer.class));
         }
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        UserDto userDto = modelMapper.map(userService.getUserDtoFromUsername(principal.getName()), UserDto.class);
+        userService.decerementNumberOfTickets(userDto, manyCustomers.getCustomers().size());
+
+
 
     }
 

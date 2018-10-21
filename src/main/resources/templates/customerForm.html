@@ -22,63 +22,66 @@
 
 <br>
 
-<div th:if="enoughPlaces">
+<div th:if="${numberOfTickets > 0}">
 
-    <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
+    <div th:if="enoughPlaces">
 
+        <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
 
+            <div class="row">
 
-        <div class="row">
+                <div class="col-5">
+                    <img src="/img/map_hall.jpg" width="400"/>
+                    <img src="/img/map_1floor.jpg" width="400"/>
+                    <img src="/img/map_2floor.jpg" width="400"/>
+                </div>
 
-            <div class="col-5">
-                <img src="/img/map_hall.jpg" width="400"/>
-                <img src="/img/map_1floor.jpg" width="400"/>
-                <img src="/img/map_2floor.jpg" width="400"/>
-            </div>
+                <div class="col-7">
+                    <!--<div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">-->
+                    <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
+                        <ul class="my-5 list-unstyled">
 
-            <div class="col-7">
-                <!--<div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">-->
-                <form th:action="@{/addCustomer}" method="post" th:object="${manyCustomers}">
-                    <ul class="my-5 list-unstyled">
+                            <div class="form-group">
+                                <label th:for="'kvTable'">Dostępne stoliki dla wybranej ilości osób:</label>
 
+                                <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
+                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
+                                </select>
+
+                            </div>
+
+                            <li th:each="c, stat : *{customers}">
+                                <div class="form-group">
+                                    <label th:for="'name' + ${stat.index}">Imię:</label>
+                                    <input th:id="'name' + ${stat.index}" type="text" class="form-control"
+                                           th:field="*{customers[__${stat.index}__].name}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label th:for="surname">Nazwisko:</label>
+                                    <input th:id="surname" type="text" class="form-control"
+                                           th:field="*{customers[__${stat.index}__].surname}"/>
+                                </div>
+
+                            </li>
+                        </ul>
                         <div class="form-group">
-                            <label th:for="'kvTable'">Dostępne stoliki dla wybranej ilości osób:</label>
-
-                            <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
-                                <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
-                            </select>
-
+                            <button class="btn btn-success btn-lg" type="submit">SEND</button>
                         </div>
+                    </form>
+                </div>
 
-                        <li th:each="c, stat : *{customers}">
-                            <div class="form-group">
-                                <label th:for="'name' + ${stat.index}">Imię:</label>
-                                <input th:id="'name' + ${stat.index}" type="text" class="form-control"
-                                       th:field="*{customers[__${stat.index}__].name}"/>
-                            </div>
-                            <div class="form-group">
-                                <label th:for="surname">Nazwisko:</label>
-                                <input th:id="surname" type="text" class="form-control"
-                                        th:field="*{customers[__${stat.index}__].surname}"/>
-                            </div>
-
-                        </li>
-                    </ul>
-                    <div class="form-group">
-                        <button class="btn btn-success btn-lg" type="submit">SEND</button>
-                    </div>
-                </form>
             </div>
-
         </div>
-
     </div>
+</div>
+
+<div th:if="${numberOfTickets <= 0}">
+    <h1>Uzytkownik wyczerpał pulę swoich biletów!</h1>
 </div>
 
 <div class="container" th:if="${notEnoughPlaces}">
     <h1>brak wolnych miejsc dla tej ilosci klientów</h1>
 </div>
-
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

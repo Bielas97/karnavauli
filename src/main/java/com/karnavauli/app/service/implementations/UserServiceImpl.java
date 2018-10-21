@@ -62,4 +62,23 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("nie znaleziono uzytkownika"));
         user.setRole(role);
     }
+
+    @Override
+    public void incrementNumberOfTickets(UserDto userDto) {
+        userDto.setNumberOfTickets(userDto.getNumberOfTickets() + 1);
+        addOrUpdateUser(userDto);
+    }
+
+    @Override
+    public void decerementNumberOfTickets(UserDto userDto, int size) {
+        userDto.setNumberOfTickets(userDto.getNumberOfTickets() - size);
+        addOrUpdateUser(userDto);
+    }
+
+
+    @Override
+    public void decerementNumberOfTickets(UserDto userDto) {
+        userDto.setNumberOfTickets(userDto.getNumberOfTickets() - 1);
+        addOrUpdateUser(userDto);
+    }
 }

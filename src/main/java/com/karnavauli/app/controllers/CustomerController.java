@@ -42,7 +42,7 @@ public class CustomerController {
     }*/
 
     @GetMapping("/addCustomer/{amountOfTickets}")
-    public String addCustomerGet(Model model, @PathVariable int amountOfTickets) {
+    public String addCustomerGet(Model model, @PathVariable int amountOfTickets, Principal principal) {
         List<KvTableDto> free = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
 
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
@@ -60,6 +60,9 @@ public class CustomerController {
         } else {
             model.addAttribute("notEnoughPlaces", false);
         }
+        //liczba dostepnych biletow do sprzedania przez danego uzytkownika
+        model.addAttribute("numberOfTickets", userService.getUserDtoFromUsername(principal.getName()).getNumberOfTickets());
+
         return "customerForm";
     }
 
