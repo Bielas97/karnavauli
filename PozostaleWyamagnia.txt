@@ -6,7 +6,7 @@ lista to do:
 
 1. funckjonalnosc customersa:
 	1.1 Wyswietlenie ktore stoliki sa wolne dla danej ilosci osob - jakas graficzka moze dac je na zielono? :)  DONE (bez kolorku)
-	1.2 uzupelnienie formularza sprzedawania biletow (/addCustomer) 		TODO czekam na odpowiedz ze SLACKA
+	1.2 uzupelnienie formularza sprzedawania biletow (/addCustomer) 		DONE
 	
 2. funkcjonalnosc usera:
 	2.1 dodanie kolumny number_of_tickets 				DONE
@@ -22,6 +22,16 @@ lista to do:
 3. funkcjonalnosc admina:       DONE
 	3.1 dodanie do encji kv_table kolumny 'owner' - dla zwyklych klientow bedzie wartosc 'regular' dla innych nazwa, np: VIP, besciaki, itp...  DONE
 	3.2 mozliwosc zajmowania N miejsc w N stolikach dla vipow i innych      DONE
+
+
+4. funkcjonalnosc biletów:
+    4.1 mozliwosc sprzedawania tylko tych biletow ktore sa przeznaczone dla danego uzytkownika
+        opis:
+            admin zmienia "ownera" biletu na nazwe z tabelki tickets - danie "selecta" w formularzu update'a stolika
+            uzykownik o loginie takim jak "shortName" moze sprzedawac tylko bilety ktore sa przypozadkowane do tej uczelni
+        4.1.1 zmiana formularza updateTicket - dodanie selecta zamiast text - wybieranie ownera sposord tabelki "bilety" - fullName
+        4.1.2 pokazywanie w /add/customers tylko tych biletow ktore są dostępne dla danego uzytkownika
+
 	
 	
 	

@@ -20,11 +20,10 @@ public class Customer {
     private String name;
     @Column(name = "nazwisko")
     private String surname;
-    private String mail;
-    @Column(name = "numer_telefonu")
-    private String phoneNumber;
-    @Column(name = "numer_indeksu")
-    private String indexNumber;
+    @Column(name = "wydział")
+    private String faculty;
+    @Column(name = "czy_jest_index")
+    private Boolean isIndex;
     //many to one
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")

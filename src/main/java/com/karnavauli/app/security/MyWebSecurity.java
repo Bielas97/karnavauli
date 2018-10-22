@@ -67,6 +67,7 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/testUczelnie").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN))
                 //strona dla uczlenianych adminow*/
                 .antMatchers("/register").hasAnyRole(String.valueOf(Role.CEO)) // strona tylko dla CEO
+                .antMatchers("/table/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/ticket/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/ticket/remove/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/addTicket").hasAnyRole(String.valueOf(Role.CEO))

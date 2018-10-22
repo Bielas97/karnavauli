@@ -76,9 +76,8 @@
                     <th scope="col">Imie</th>
                     <th scope="col">Nazwisko</th>
                     <th scope="col">Miejsce</th>
-                    <th scope="col">Mail</th>
-                    <th scope="col">nr. indeksu</th>
-                    <th scope="col">nr. telefonu</th>
+                    <th scope="col">Wydział</th>
+                    <th scope="col">Index?</th>
                     <th scope="col">sprzedawca</th>
                 </tr>
                 </thead>
@@ -88,9 +87,8 @@
                     <td th:text="${c.name}"></td>
                     <td th:text="${c.surname}"></td>
                     <td th:text="${c.kvTable.name}"></td>
-                    <td th:text="${c.mail}"></td>
-                    <td th:text="${c.indexNumber}"></td>
-                    <td th:text="${c.phoneNumber}"></td>
+                    <td th:text="${c.faculty}"></td>
+                    <td th:text="${c.isIndex}"></td>
                     <td th:text="${c.user.username}"></td>
                     <td>
                         <a class="btn btn-primary mr-2"

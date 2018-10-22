@@ -18,9 +18,9 @@ public class CustomerValidator implements Validator {
 
         String mailRegex = ".+@.+\\..+";
 
-        if(!customerDto.getMail().matches(mailRegex)){
+        /*if(!customerDto.getMail().matches(mailRegex)){
             errors.rejectValue("mail", "wrong mail");
-        }
+        }*/
 
     }
 }
