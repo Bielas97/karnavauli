@@ -22,4 +22,5 @@ public class KvTable {
     private Integer occupiedPlaces;
     @OneToMany(mappedBy = "kvTable")
     private List<Customer> customer;
+    private String owner;
 }

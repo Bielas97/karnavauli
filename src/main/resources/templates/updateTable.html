@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>update table</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+</head>
+<body>
+
+<div style="background: black">
+    <div id="header">
+        <br>
+        <h2 style="text-align: center; color: white">
+            <a href="/" style="text-decoration: none; color: white;">System Sprzedaży biletów na bal Karnavauli 2019</a>
+        </h2>
+        <br>
+    </div>
+</div>
+
+<br>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
+            <h2 class="mt-5">Zmień bilet</h2>
+            <form th:action="@{/table/update}" method="post" th:object="${kvTable}">
+                <!--<input type="text" th:field="*{id}" hidden="hidden"/>-->
+
+                <input type="text" th:field="*{id}" hidden="hidden"/>
+                <input type="text" th:field="*{occupiedPlaces}" hidden="hidden"/>
+                <div class="form-group">
+                    <label th:for="'name'">Imię:</label>
+                    <input th:id="'name'" type="text" class="form-control"
+                           th:field="*{name}"/>
+                </div>
+                <div class="form-group">
+                    <label th:for="maxPlaces">Max miejsc:</label>
+                    <input id="maxPlaces" class="form-control" type="number" th:field="*{maxPlaces}"/>
+                </div>
+                <div class="form-group">
+                    <label th:for="owner">Max miejsc:</label>
+                    <input id="owner" class="form-control" type="text" th:field="*{owner}"/>
+                </div>
+                <!--<select th:field="*{kvTable}">
+                    <option th:each="e : ${seats}" th:value="${e}" th:text="${e}"></option>
+                </select>-->
+
+                <div>
+                    <input class="btn btn-success" type="submit" value="Zapisz"/>
+                    <input class="btn btn-danger" type="reset" value="Wyczyść dane"/>
+                    <a class="btn btn-primary" href="/">Strona główna</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+<script src="/js/indexScript.js"></script>
+</body>
+</html>

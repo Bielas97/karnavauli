@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface KvTableService {
     void addOrUpdateKvTable(KvTableDto kvTableDto);
+    void updateKvTableOwner(KvTableDto kvTableDto);
     void deleteKvTable(Long id);
     Optional<KvTableDto> getOneKvTable(Long id);
     List<KvTableDto> getAll();
@@ -19,6 +20,7 @@ public interface KvTableService {
     List<KvTableDto> getFreeTablesForAmountOfPeople(int amountOfPeople);
     void incrementOccupiedPlaces(Long id, int size);
     void decrementOccupiedPlaces(Long id);
+    void changeOwnerForTable(KvTableDto kvTableDto, String owners);
 
     List<KvTableDto> getFreeTablesPlusCurrentTable(ManyCustomers manyCustomers);
 }

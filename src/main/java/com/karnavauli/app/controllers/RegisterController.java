@@ -3,6 +3,7 @@ package com.karnavauli.app.controllers;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.service.UserService;
+import com.karnavauli.app.service.implementations.MyUserDetailsService;
 import com.karnavauli.app.validators.UserValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +23,12 @@ import java.util.stream.Collectors;
 
 @Controller
 public class RegisterController {
-
-    //nie wiem o co mi tu chodzilo ????
-    //TODO: generuje id od 1 w bazie a ma generowac poczynajac od liczby wiekszej o 1 niz ostatni rekord
-
+    private MyUserDetailsService myUserDetailsService;
     private UserService userService;
     //private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public RegisterController(UserService userService/*, BCryptPasswordEncoder bCryptPasswordEncoder*/) {
+    public RegisterController(MyUserDetailsService myUserDetailsService, UserService userService/*, BCryptPasswordEncoder bCryptPasswordEncoder*/) {
+        this.myUserDetailsService = myUserDetailsService;
         this.userService = userService;
         //this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -71,6 +70,7 @@ public class RegisterController {
             model.addAttribute("errors", errors);
             model.addAttribute("userDto", userDto);
             model.addAttribute("roles", Role.values());
+            myUserDetailsService.loadUserByUsername(userDto.getUsername());
             return "register";
         }
 

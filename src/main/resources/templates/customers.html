@@ -56,10 +56,15 @@
                         </fieldset>
                     </div>
                 </div>
-
             </div>
-
             <script src="js/customersScript.js"></script>
+
+            <hr>
+            <div>Użytkownik:
+                <p th:text="${user}"></p>
+                liczba dostępnych biletów:
+                <p th:text="${numberOfTickets}"></p>
+            </div>
 
         </div>
         <div class="col-8">
@@ -100,7 +105,6 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>

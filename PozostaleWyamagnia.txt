@@ -13,13 +13,15 @@ lista to do:
 	2.2 mozliwosc sprzedawania tak duzo biletow przez usera ile ma w komorce number_of_tickets
 		2.2.1 odejmowanie zawsze N od number_of_tickets przy sprzedawaniu N biletow		DONE
 		2.2.2 dodawanie zawsze 1 do number_of_tickets przy usuwaniu klienta				DONE
-		2.2.3 zmiana formularza rejestracji nowego sprzedawcy - wybranie ile sprzedawca moze sprzedawac biletow - ustawienie pola number_of_tickets
-		2.2.4 dodanie na stronie /showCustomers ile dany user ma jeszcze do sprzedania biletow
+		2.2.3 zmiana formularza rejestracji nowego sprzedawcy - wybranie ile sprzedawca moze sprzedawac biletow - ustawienie pola number_of_tickets     DONE
+		2.2.4 dodanie na stronie /showCustomers ile dany user ma jeszcze do sprzedania biletow      DONE
 		2.2.5 brak mozliwosci sprzedazy biletow gdy number_of_tickets osiagnie 0! 		DONE
+		2.2.6 dodawanie uzytkownikow w runTime
+
 		
-3. funkcjonalnosc admina:
-	3.1 dodanie do encji kv_table kolumny 'owner' - dla zwyklych klientow bedzie wartosc 'regular' dla innych nazwa, np: VIP, besciaki, itp...
-	3.2 mozliwosc zajmowania N miejsc w N stolikach dla vipow i innych
+3. funkcjonalnosc admina:       DONE
+	3.1 dodanie do encji kv_table kolumny 'owner' - dla zwyklych klientow bedzie wartosc 'regular' dla innych nazwa, np: VIP, besciaki, itp...  DONE
+	3.2 mozliwosc zajmowania N miejsc w N stolikach dla vipow i innych      DONE
 	
 	
 	

@@ -68,6 +68,14 @@ public class KvTableServiceImpl implements KvTableService {
     }
 
     @Override
+    public void updateKvTableOwner(KvTableDto kvTableDto) {
+        if(!kvTableDto.getOwner().equals("regular")){
+            kvTableDto.setOccupiedPlaces(kvTableDto.getMaxPlaces());
+        }
+        kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+    }
+
+    @Override
     public void deleteKvTable(Long id) {
         kvTableRepository.deleteById(id);
     }
@@ -132,6 +140,15 @@ public class KvTableServiceImpl implements KvTableService {
     public void decrementOccupiedPlaces(Long id) {
         Optional<KvTable> kvTable = kvTableRepository.findById(id);
         kvTable.ifPresent((kv) -> kv.setOccupiedPlaces(kvTable.get().getOccupiedPlaces() - 1));
+    }
+
+
+    @Override
+    public void changeOwnerForTable(KvTableDto kvTableDto, String owners) {
+        KvTableDto table = getOneKvTable(kvTableDto.getId()).orElseThrow(NullPointerException::new);
+        table.setOwner(owners);
+        addOrUpdateKvTable(table);
+
     }
 
     @Override

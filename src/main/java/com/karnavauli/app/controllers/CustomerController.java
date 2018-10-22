@@ -129,8 +129,12 @@ public class CustomerController {
     }*/
 
     @GetMapping("/showCustomers")
-    public String customers(Model model) {
+    public String customers(Model model, Principal principal) {
         model.addAttribute("customers", customerService.getAll());
+        //liczba dostepnych biletow do sprzedania przez danego uzytkownika
+        model.addAttribute("numberOfTickets", userService.getUserDtoFromUsername(principal.getName()).getNumberOfTickets());
+        //nazwa zalogowanego usera
+        model.addAttribute("user", principal.getName());
         return "customers";
     }
 

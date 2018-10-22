@@ -57,17 +57,19 @@
                     </div>
                     <p class="mb-1">Zarejestruj nowego sprzedawcę</p>
                 </a>
-                <a href="/permissions" class="list-group-item list-group-item-action flex-column align-items-start">
+                <a href="/tables" class="list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">Uprawnienia</h5>
+                        <h5 class="mb-1">Zajmij stoliki</h5>
                         <small class="text-muted">Administrator</small>
                     </div>
-                    <p class="mb-1">Zmień uprawnienia użytkownikom</p>
+                    <p class="mb-1">Zarezerwuj miejsca dla vipów, beściaków...</p>
                 </a>
             </div>
         </div>
         <div class="col-2">
             Zalogowany jako <p th:text="${user}"></p>
+            liczba dostępnych biletów:
+            <p th:text="${numberOfTickets}"></p>
         </div>
         <div>
             <form th:action="@{/app-logout}" method="post">
