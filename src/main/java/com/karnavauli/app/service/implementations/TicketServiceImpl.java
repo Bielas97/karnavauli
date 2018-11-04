@@ -59,11 +59,10 @@ public class TicketServiceImpl implements TicketService {
                 .collect(Collectors.toList());
     }
 
-    private TicketDto setRolesWithDelimiter(TicketDto ticket) {
+   /* private TicketDto setRolesWithDelimiter(TicketDto ticket) {
         String rolesWithDelimiter = ticket.getTicketDealers().stream()
                 .map(Enum::name)
                 .collect(Collectors.joining(","));
         ticket.setRoles(rolesWithDelimiter);
-        return ticket;
-    }
+        return ticket;*/
 }

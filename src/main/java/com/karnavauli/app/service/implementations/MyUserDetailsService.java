@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.service.implementations;
 
 import com.karnavauli.app.model.dto.UserDto;
@@ -57,3 +58,4 @@ public class MyUserDetailsService implements UserDetailsService {
         return authorities;
     }
 }
+*/

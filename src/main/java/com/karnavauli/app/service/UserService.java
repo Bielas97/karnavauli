@@ -21,4 +21,6 @@ public interface UserService {
     void incrementNumberOfTickets(UserDto userDto);
     void decerementNumberOfTickets(UserDto userDto, int size);
     void decerementNumberOfTickets(UserDto userDto);
+
+    boolean isUserTableEmpty();
 }

@@ -56,6 +56,11 @@
                         <option th:each="e : ${roles}" th:value="${e}" th:text="${e}"></option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Bilety</label>
+                    <input type="checkbox" th:each="t : ${formTickets}" th:value="t" th:text="${t.shortName}"
+                            th:field="*{tickets}"/>
+                </div>
                 <div>
                     <input class="btn btn-success" type="submit" value="Register"/>
                     <input class="btn btn-danger" type="reset" value="Reset"/>

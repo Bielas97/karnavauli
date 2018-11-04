@@ -1,9 +1,9 @@
 package com.karnavauli.app.security;
 
 import com.karnavauli.app.model.enums.Role;
-import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,7 +12,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.servlet.ServletException;
@@ -24,16 +27,16 @@ import java.io.IOException;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity
 public class MyWebSecurity extends WebSecurityConfigurerAdapter {
-    private UserService userService;
+    private UserDetailsService userDetailsService;
 
-    public MyWebSecurity(UserService userService) {
-        this.userService = userService;
+    public MyWebSecurity(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        //czytanie z bazy uzytkownikow
+       /* //czytanie z bazy uzytkownikow
         for(int i=0; i<userService.getAll().size(); i++){
 //            UserDto userDtos = userService.getOneUser((long) i).get();
             UserDto us = userService.getAll().get(i);
@@ -42,6 +45,12 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                     .inMemoryAuthentication()
                     .withUser(userDto.getUsername()).password(userDto.getPassword()).roles(String.valueOf(userDto.getRole()));
         }
+        if(userService.getAll().isEmpty()){
+            auth
+                    .inMemoryAuthentication()
+                    //todo jak ustawic tutaj number of tickets
+                    .withUser("bielas").password("1234").roles(String.valueOf(Role.CEO));
+        }*/
 
         //wpisywanie na sztywno uzytkownikow
         /*auth
@@ -55,6 +64,12 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .withUser("admin_sggw").password("1234").roles(String.valueOf(Role.SGGW_ADMIN))
                 .and()
                 .withUser("admin_pw").password("1234").roles(String.valueOf(Role.PW_ADMIN));*/
+        auth
+                .inMemoryAuthentication()
+                .withUser("user").password(passwordEncoder().encode("1234")).roles(String.valueOf(Role.CEO));
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -73,7 +88,7 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/addTicket").hasAnyRole(String.valueOf(Role.CEO))
                 .anyRequest().authenticated() // pozostale zadania maja byc objete logowaniem
 
-                    //strona addCustomer jest dla kazdego i to mowi powyzsza linijka
+                //strona addCustomer jest dla kazdego i to mowi powyzsza linijka
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
@@ -108,8 +123,8 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public NoOpPasswordEncoder noOpPasswordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

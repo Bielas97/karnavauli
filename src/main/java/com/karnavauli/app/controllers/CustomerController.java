@@ -7,14 +7,15 @@ import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.UserService;
+import com.karnavauli.app.validators.CustomerValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.*;
 
@@ -31,8 +32,8 @@ public class CustomerController {
         this.kvTableService = kvTableService;
     }
 
-    //@InitBinder
-    /*private void initializeBinder(WebDataBinder webDataBinder) {
+  /*  @InitBinder
+    private void initializeBinder(WebDataBinder webDataBinder) {
         webDataBinder.setValidator(new CustomerValidator());
     }*/
 
@@ -67,7 +68,7 @@ public class CustomerController {
     }
 
     @PostMapping("/addCustomer")
-    public String addCustomerPost(@ModelAttribute ManyCustomers manyCustomers, Principal principal) {
+    public String addCustomerPost(/*@Valid*/ @ModelAttribute ManyCustomers manyCustomers, BindingResult result, Principal principal) {
         Long id = manyCustomers.getKvTableId();
         manyCustomers.setKvTable(kvTableService.getOneKvTable(id).get());
         //kvTableService.incrementOccupiedPlaces(id, manyCustomers.getCustomers().size());

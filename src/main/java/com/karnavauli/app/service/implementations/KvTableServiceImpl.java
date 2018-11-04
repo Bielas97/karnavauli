@@ -3,13 +3,16 @@ package com.karnavauli.app.service.implementations;
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
+import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.repository.KvTableRepository;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
+import com.karnavauli.app.service.TicketService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,12 +21,14 @@ import java.util.stream.Collectors;
 public class KvTableServiceImpl implements KvTableService {
     private KvTableRepository kvTableRepository;
     private ModelMapper modelMapper;
+    private TicketService ticketService;
 
     private CustomerService customerService;
 
-    public KvTableServiceImpl(KvTableRepository kvTableRepository, ModelMapper modelMapper, CustomerService customerService) {
+    public KvTableServiceImpl(KvTableRepository kvTableRepository, ModelMapper modelMapper, TicketService ticketService, CustomerService customerService) {
         this.kvTableRepository = kvTableRepository;
         this.modelMapper = modelMapper;
+        this.ticketService = ticketService;
         this.customerService = customerService;
     }
 
@@ -67,13 +72,6 @@ public class KvTableServiceImpl implements KvTableService {
         kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
     }
 
-    @Override
-    public void updateKvTableOwner(KvTableDto kvTableDto) {
-        if(!kvTableDto.getOwner().equals("regular")){
-            kvTableDto.setOccupiedPlaces(kvTableDto.getMaxPlaces());
-        }
-        kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
-    }
 
     @Override
     public void deleteKvTable(Long id) {
@@ -159,5 +157,12 @@ public class KvTableServiceImpl implements KvTableService {
             freeTablesPlusCurrenTable.add(0, manyCustomers.getCustomers().get(0).getKvTable());
         }
         return freeTablesPlusCurrenTable;
+    }
+
+    @Override
+    public List<KvTableDto> getFreeTablesForUser(UserDto userDto) {
+        List<KvTableDto> tables = new ArrayList<>();
+
+        return tables;
     }
 }

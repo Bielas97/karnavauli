@@ -6,6 +6,7 @@ import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.repository.UserRepository;
 import com.karnavauli.app.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +18,17 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void addOrUpdateUser(UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(modelMapper.map(userDto, User.class));
     }
 
@@ -80,5 +84,10 @@ public class UserServiceImpl implements UserService {
     public void decerementNumberOfTickets(UserDto userDto) {
         userDto.setNumberOfTickets(userDto.getNumberOfTickets() - 1);
         addOrUpdateUser(userDto);
+    }
+
+    @Override
+    public boolean isUserTableEmpty() {
+        return userRepository.count() == 0;
     }
 }

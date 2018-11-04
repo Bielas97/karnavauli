@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,10 +27,8 @@ public class Ticket {
     private Double price;
     @Column(name = "uczelnia")
     private Boolean isUni;
-    @ElementCollection(targetClass = Role.class)
-    @JoinTable(name = "tblRole", joinColumns = @JoinColumn(name = "ticketID"))
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private List<Role> ticketDealers;
+    @ManyToMany(mappedBy = "tickets", fetch = FetchType.EAGER)
+    private List<User> ticketDealers;
+
 
 }

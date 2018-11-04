@@ -1,8 +1,8 @@
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.service.KvTableService;
+import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +17,12 @@ import java.security.Principal;
 public class BasicController {
     private UserService userService;
     private KvTableService kvTableService;
+    private TicketService ticketService;
 
-    public BasicController(UserService userService, KvTableService kvTableService) {
+    public BasicController(UserService userService, KvTableService kvTableService, TicketService ticketService) {
         this.userService = userService;
         this.kvTableService = kvTableService;
+        this.ticketService = ticketService;
     }
 
     @GetMapping("/")
@@ -75,12 +77,13 @@ public class BasicController {
     @GetMapping("/table/update/{id}")
     public String bookTable(Model model, @PathVariable Long id){
         model.addAttribute("kvTable", kvTableService.getOneKvTable(id).orElseThrow(NullPointerException::new));
+        model.addAttribute("tickets", ticketService.getAll());
         return "updateTable";
     }
 
     @PostMapping("/table/update")
     public String bookTablePost(@ModelAttribute KvTableDto kvTable){
-        kvTableService.updateKvTableOwner(kvTable);
+        kvTableService.addOrUpdateKvTable(kvTable);
 
         return "redirect:/tables";
     }

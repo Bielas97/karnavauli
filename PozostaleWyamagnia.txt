@@ -29,8 +29,13 @@ lista to do:
         opis:
             admin zmienia "ownera" biletu na nazwe z tabelki tickets - danie "selecta" w formularzu update'a stolika
             uzykownik o loginie takim jak "shortName" moze sprzedawac tylko bilety ktore sa przypozadkowane do tej uczelni
-        4.1.1 zmiana formularza updateTicket - dodanie selecta zamiast text - wybieranie ownera sposord tabelki "bilety" - fullName
+        4.1.1 zmiana formularza updateTicket - dodanie selecta zamiast text - wybieranie ownera sposord tabelki "bilety" - fullName     DONE
         4.1.2 pokazywanie w /add/customers tylko tych biletow ktore są dostępne dla danego uzytkownika
+
+5. dodanie widoku z cena jaka uzytkownik musi zaplacic plus reszte jaka trzeb mu wydac
+
+**********
+TODO dlaczego przy dodawaniu usera musze odpalic program na nowo by sie na niego zalogowac?!
 
 	
 	

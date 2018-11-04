@@ -1,9 +1,9 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.model.dto.UserDto;
+import com.karnavauli.app.model.enums.Role;
+import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
-import com.karnavauli.app.service.implementations.MyUserDetailsService;
 import com.karnavauli.app.validators.UserValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 
 @Controller
 public class RegisterController {
-    private MyUserDetailsService myUserDetailsService;
     private UserService userService;
-    //private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private TicketService ticketService;
+    /*private PasswordEncoder passwordEncoder;*/
 
-    public RegisterController(MyUserDetailsService myUserDetailsService, UserService userService/*, BCryptPasswordEncoder bCryptPasswordEncoder*/) {
-        this.myUserDetailsService = myUserDetailsService;
+    public RegisterController(UserService userService,/*, PasswordEncoder passwordEncoder*/TicketService ticketService) {
         this.userService = userService;
-        //this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        /*this.passwordEncoder = passwordEncoder;*/
+        this.ticketService = ticketService;
     }
 
     @InitBinder
@@ -41,7 +41,7 @@ public class RegisterController {
     @GetMapping("/users")
     public String showUsers(Model model){
         List<UserDto> users = userService.getAll();
-        users.stream().forEach(e -> e.setPassword(null));
+        users.forEach(e -> e.setPassword(null));
         model.addAttribute("users", users);
         return "showUsers";
     }
@@ -51,6 +51,7 @@ public class RegisterController {
         model.addAttribute("userDto", new UserDto());
         model.addAttribute("roles", Role.values());
         model.addAttribute("errors", new HashMap<>());
+        model.addAttribute("formTickets", ticketService.getAll());
         return "register";
     }
 
@@ -60,8 +61,9 @@ public class RegisterController {
             BindingResult bindingResult,
             Model model
     ){
-
+        System.out.println("weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeszlo");
         if (bindingResult.hasErrors()) {
+            System.out.println("errrrrrrrrrrrror");
             Map<String, String> errors
                     = bindingResult
                     .getFieldErrors()
@@ -70,11 +72,12 @@ public class RegisterController {
             model.addAttribute("errors", errors);
             model.addAttribute("userDto", userDto);
             model.addAttribute("roles", Role.values());
-            myUserDetailsService.loadUserByUsername(userDto.getUsername());
+            model.addAttribute("formTickets", ticketService.getAll());
             return "register";
         }
 
-        // userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        /*userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));*/
+        System.out.println(userDto);
         userService.addOrUpdateUser(userDto);
         return "redirect:/";
     }
