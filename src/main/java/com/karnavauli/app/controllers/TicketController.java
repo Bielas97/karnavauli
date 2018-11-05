@@ -42,15 +42,15 @@ public class TicketController {
     @GetMapping("/addTicket")
     public String addTicket(Model model) {
         model.addAttribute("ticket", new TicketDto());
-        model.addAttribute("role", Role.values());
+        model.addAttribute("sellers", userService.getAll());
         return "addTicket";
     }
 
     @PostMapping("/addTicket")
     public String addTicketPost(@ModelAttribute TicketDto ticketDto, BindingResult result, Principal principal) {
         System.out.println("*******************************************");
-        List<User> users = Collections.singletonList(userService.getUserDtoFromUsername(principal.getName()));
-        ticketDto.setTicketDealers(users);
+        //List<User> users = Collections.singletonList(userService.getUserDtoFromUsername(principal.getName()));
+        //ticketDto.setTicketDealers(users);
         ticketService.addOrUpdateTicket(ticketDto);
         System.out.println(ticketDto);
         return "redirect:/tickets";

@@ -1,21 +1,16 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.model.dto.CustomerDto;
-import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.dto.ManyCustomers;
-import com.karnavauli.app.model.entities.Customer;
+import com.karnavauli.app.model.dto.*;
+import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
+import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
-import com.karnavauli.app.validators.CustomerValidator;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.*;
 
@@ -24,12 +19,14 @@ public class CustomerController {
     private CustomerService customerService;
     private UserService userService;
     private KvTableService kvTableService;
+    private TicketService ticketService;
 
 
-    public CustomerController(CustomerService customerService, UserService userService, KvTableService kvTableService) {
+    public CustomerController(CustomerService customerService, UserService userService, KvTableService kvTableService, TicketService ticketService) {
         this.customerService = customerService;
         this.userService = userService;
         this.kvTableService = kvTableService;
+        this.ticketService = ticketService;
     }
 
   /*  @InitBinder
@@ -45,6 +42,15 @@ public class CustomerController {
     @GetMapping("/addCustomer/{amountOfTickets}")
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets, Principal principal) {
         List<KvTableDto> free = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
+        /*free.stream().filter(kvTableDto -> {
+            User user = userService.getUserDtoFromUsername(principal.getName());
+            for (int i = 0; i < user.getTickets().size(); i++) {
+                if (kvTableDto.getOwner().equals(user.getTickets().get(i).getFullName())) {
+                    return true;
+                }
+            }
+            return false;
+        });*/
 
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());

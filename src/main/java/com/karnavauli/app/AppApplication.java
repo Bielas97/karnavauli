@@ -34,7 +34,7 @@ public class AppApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		if (userRepository.count() == 0) {
-			userRepository.save(User.builder().numberOfTickets(10).password(passwordEncoder.encode("1234")).role(Role.CEO).username("user").build());
+			userRepository.save(User.builder().numberOfTickets(9999).password(passwordEncoder.encode("1234")).role(Role.CEO).username("bielas").build());
 		}
 	}
 }
