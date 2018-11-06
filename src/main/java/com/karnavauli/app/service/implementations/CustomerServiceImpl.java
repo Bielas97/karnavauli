@@ -51,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
         kvTableRepository.save(table);
         customerRepository.deleteById(id);
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        UserDto userDto = modelMapper.map(userService.getUserDtoFromUsername(principal.getName()), UserDto.class);
+        UserDto userDto = modelMapper.map(userService.getUserFromUsername(principal.getName()), UserDto.class);
         userService.incrementNumberOfTickets(userDto);
     }
 
@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.save(modelMapper.map(manyCustomers.getCustomers().get(i), Customer.class));
         }
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        UserDto userDto = modelMapper.map(userService.getUserDtoFromUsername(principal.getName()), UserDto.class);
+        UserDto userDto = modelMapper.map(userService.getUserFromUsername(principal.getName()), UserDto.class);
         userService.decerementNumberOfTickets(userDto, manyCustomers.getCustomers().size());
 
 

@@ -30,7 +30,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserDtoFromUsername(username);
+        User user = userService.getUserFromUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(
                     "No user found with username: " + username);

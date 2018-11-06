@@ -1,7 +1,6 @@
 package com.karnavauli.app.model.dto;
 
 import com.karnavauli.app.model.entities.User;
-import com.karnavauli.app.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +19,5 @@ public class TicketDto {
     private Double price;
     private Boolean isUni;
     private List<User> ticketDealers;
+    private List<KvTableDto> tablesDto;
 }

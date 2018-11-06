@@ -1,29 +1,38 @@
 package com.karnavauli.app.service.implementations;
 
+import com.karnavauli.app.exceptions.ExceptionCode;
+import com.karnavauli.app.exceptions.MyException;
+import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.model.dto.UserDto;
+import com.karnavauli.app.repository.TicketRepository;
 import com.karnavauli.app.repository.UserRepository;
 import com.karnavauli.app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
+    private TicketRepository ticketRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, TicketRepository ticketRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -56,9 +65,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserDtoFromUsername(String username) {
+    public User getUserFromUsername(String username) {
         //return modelMapper.map(userRepository.findByUsername(username), UserDto.class);
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserDto getUserDtoFromUsername(String username) {
+        return modelMapper.map(userRepository.findByUsername(username), UserDto.class);
     }
 
     @Override
@@ -89,5 +103,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserTableEmpty() {
         return userRepository.count() == 0;
+    }
+
+    @Override
+    public UserDto getById(Long id) {
+        return modelMapper.map(userRepository.findById(id).orElseThrow(NullPointerException::new), UserDto.class);
+    }
+
+    @Override
+    public void addUsersToTickets(UserDto userDto) {
+        try {
+            if (userDto == null) {
+                throw new NullPointerException("USERDTO IS NULL");
+            }
+            User user = userRepository.save(modelMapper.map(userDto, User.class));
+            List<Ticket> tickets = userDto
+                    .getTickets()
+                    .stream()
+                    .map(t -> {
+                        Ticket ticket = ticketRepository.findById(t.getId()).orElseThrow(NullPointerException::new);
+                        ticket.getTicketDealers().addAll(Arrays.asList(user));
+                        return ticket;
+                    })
+                    .collect(Collectors.toList());
+            ticketRepository.saveAll(tickets);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MyException(ExceptionCode.SERVICE, "ADD USERS TO TICKET EXCEPTION: " + e.getMessage());
+        }
+
     }
 }

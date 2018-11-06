@@ -23,4 +23,7 @@ public class KvTable {
     @OneToMany(mappedBy = "kvTable")
     private List<Customer> customer;
     private String owner;
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 }

@@ -15,7 +15,8 @@ public interface UserService {
 
     Long getUserIdFromUsername(String username);
     //TODO przerobic na userDto
-    User getUserDtoFromUsername(String username);
+    User getUserFromUsername(String username);
+    UserDto getUserDtoFromUsername(String username);
     void changeRole(Long id, Role role);
 
     void incrementNumberOfTickets(UserDto userDto);
@@ -23,4 +24,7 @@ public interface UserService {
     void decerementNumberOfTickets(UserDto userDto);
 
     boolean isUserTableEmpty();
+    UserDto getById(Long id);
+
+    void addUsersToTickets(UserDto userDto);
 }

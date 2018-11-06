@@ -19,6 +19,7 @@ public class KvTableDto {
     private Integer occupiedPlaces;
     private List<CustomerDto> customer;
     private String owner;
+    private TicketDto ticketDto;
 
 
 }

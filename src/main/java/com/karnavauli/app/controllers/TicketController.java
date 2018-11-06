@@ -1,12 +1,11 @@
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.TicketDto;
-import com.karnavauli.app.model.entities.User;
+import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
 import com.karnavauli.app.validators.TicketValidator;
-import com.karnavauli.app.validators.UserValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 public class TicketController {
@@ -48,11 +44,16 @@ public class TicketController {
 
     @PostMapping("/addTicket")
     public String addTicketPost(@ModelAttribute TicketDto ticketDto, BindingResult result, Principal principal) {
-        System.out.println("*******************************************");
-        //List<User> users = Collections.singletonList(userService.getUserDtoFromUsername(principal.getName()));
+        //List<User> users = Collections.singletonList(userService.getUserFromUsername(principal.getName()));
         //ticketDto.setTicketDealers(users);
-        ticketService.addOrUpdateTicket(ticketDto);
-        System.out.println(ticketDto);
+        //System.out.println(ticketService.getTablesForUser(userService.getUserFromUsername(principal.getName()).getId()));
+        UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
+        userService.addUsersToTickets(userDto);
+        ticketService.addTicketsToUsers(ticketDto);
+
+        //System.out.println("----------------------" + ticketService.getTablesForUser(userService.getUserDtoFromUsername(principal.getName()).getId()));
+        // ticketService.addOrUpdateTicket(ticketDto);
+        //System.out.println(ticketDto);
         return "redirect:/tickets";
     }
 

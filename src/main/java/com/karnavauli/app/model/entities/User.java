@@ -1,10 +1,7 @@
 package com.karnavauli.app.model.entities;
 
 import com.karnavauli.app.model.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,8 +9,11 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
+/*@Getter
+@Setter
+@EqualsAndHashCode*/
+@Data
 public class User {
     @Id
     @GeneratedValue
@@ -30,4 +30,9 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "ticket_id") }
     )
     private List<Ticket> tickets;
+
+    /*@Override
+    public String toString() {
+        return username;
+    }*/
 }
