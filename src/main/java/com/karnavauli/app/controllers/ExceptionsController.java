@@ -14,7 +14,7 @@ public class ExceptionsController {
     public String myExceptionHandler(MyException e, Model model) {
         log.error(e.getExceptionInfo().getMessage());
         model.addAttribute("message", e.getExceptionInfo().getCode().getDescription());
-        return "myErrorPage";
+        return "errors/myErrorPage";
     }
 
 }

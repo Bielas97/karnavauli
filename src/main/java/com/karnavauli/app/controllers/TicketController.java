@@ -32,14 +32,14 @@ public class TicketController {
     @GetMapping("/tickets")
     public String showTickets(Model model) {
         model.addAttribute("tickets", ticketService.getAll());
-        return "showTickets";
+        return "tickets/showTickets";
     }
 
     @GetMapping("/addTicket")
     public String addTicket(Model model) {
         model.addAttribute("ticket", new TicketDto());
         model.addAttribute("sellers", userService.getAll());
-        return "addTicket";
+        return "tickets/addTicket";
     }
 
     @PostMapping("/addTicket")
@@ -61,17 +61,23 @@ public class TicketController {
     public String ticketUpdate(Model model, @PathVariable Long id) {
         model.addAttribute("role", Role.values());
         model.addAttribute("ticket", ticketService.getOneTicket(id).orElseThrow(NullPointerException::new));
-        return "updateTicket";
+        model.addAttribute("sellers", userService.getAll());
+        TicketDto ticketDto = ticketService.getOneTicket(id).orElseThrow(NullPointerException::new);
+        ticketService.removeTicketDealers(ticketDto);
+        return "tickets/updateTicket";
     }
 
     @PostMapping("/ticket/update")
-    public String currencyUpdatePost(@ModelAttribute TicketDto ticketDto) {
-        ticketService.addOrUpdateTicket(ticketDto);
+    public String ticketUpdatePost(@ModelAttribute TicketDto ticketDto, Principal principal) {
+        UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
+        userService.addUsersToTickets(userDto);
+        ticketService.addTicketsToUsers(ticketDto);
+        //ticketService.addOrUpdateTicket(ticketDto);
         return "redirect:/tickets";
     }
 
     @GetMapping("/ticket/remove/{id}")
-    public String customerRemove(@PathVariable Long id) {
+    public String ticketRemove(@PathVariable Long id) {
         ticketService.deleteTicket(id);
         return "redirect:/tickets";
     }

@@ -30,7 +30,10 @@ public class Ticket {
     @EqualsAndHashCode.Exclude
     private List<User> ticketDealers;
     @OneToMany(mappedBy = "ticket")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<KvTable> tables;
+
 
 
 }

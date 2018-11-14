@@ -1,6 +1,11 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.model.dto.*;
+import com.karnavauli.app.model.dto.CustomerDto;
+import com.karnavauli.app.model.dto.KvTableDto;
+import com.karnavauli.app.model.dto.ManyCustomers;
+import com.karnavauli.app.model.dto.UserDto;
+import com.karnavauli.app.model.entities.User;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.TicketService;
@@ -8,10 +13,16 @@ import com.karnavauli.app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CustomerController {
@@ -40,7 +51,14 @@ public class CustomerController {
 
     @GetMapping("/addCustomer/{amountOfTickets}")
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets, Principal principal) {
-        List<KvTableDto> free = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
+        //List<KvTableDto> free = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
+        List<KvTableDto> freeForUser;
+        if (userService.getUserDtoFromUsername(principal.getName()).getRole().equals(Role.CEO)) {
+            freeForUser = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
+        } else {
+            freeForUser = ticketService.getTablesForUser(userService.getUserDtoFromUsername(principal.getName()).getId());
+            //jakis kodzik z filterkiem do amountOfTickets
+        }
         /*free.stream().filter(kvTableDto -> {
             User user = userService.getUserFromUsername(principal.getName());
             for (int i = 0; i < user.getTickets().size(); i++) {
@@ -54,7 +72,7 @@ public class CustomerController {
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());
 
-        model.addAttribute("tables", free);
+        model.addAttribute("tables", freeForUser);
 
         //model.addAttribute("numberOfFreeSeats", seatsUtils.getNumberOfFreeSeats());
         model.addAttribute("numberOfFreeSeats", kvTableService.getAllFreeSeats());
@@ -69,7 +87,7 @@ public class CustomerController {
         //liczba dostepnych biletow do sprzedania przez danego uzytkownika
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
 
-        return "customerForm";
+        return "customers/customerForm";
     }
 
     @PostMapping("/addCustomer")
@@ -77,7 +95,8 @@ public class CustomerController {
         Long id = manyCustomers.getKvTableId();
         manyCustomers.setKvTable(kvTableService.getOneKvTable(id).get());
         //kvTableService.incrementOccupiedPlaces(id, manyCustomers.getCustomers().size());
-        manyCustomers.setUserDto(userService.getUserFromUsername(principal.getName()));
+        User user = userService.getUserFromUsername(principal.getName());
+        manyCustomers.setUserDto(user);
         customerService.addManyCustomers(manyCustomers);
 
         return "redirect:/showCustomers";
@@ -141,34 +160,29 @@ public class CustomerController {
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
         //nazwa zalogowanego usera
         model.addAttribute("user", principal.getName());
-        return "customers";
+        return "customers/customers";
     }
 
 
     @GetMapping("/customer/update/{id}")
     public String customerUpdate(Model model, @PathVariable Long id) {
-        // boolean isAnySeatFree = seatsUtils.isAnySeatFree();
         ManyCustomers manyCustomers = new ManyCustomers(1);
         CustomerDto customerDto = customerService.getOneCustomer(id).orElseThrow(NullPointerException::new);
         List<CustomerDto> customerDtoList = new ArrayList<>();
         customerDtoList.add(customerDto);
         manyCustomers.setCustomers(customerDtoList);
-        //manyCustomers.getCustomers().add(customerService.getOneCustomer(id).orElseThrow(NullPointerException::new));
 
         model.addAttribute("manyCustomers", manyCustomers);
 
-
         model.addAttribute("errors", new HashMap<>());
 
-        //TODO wywalic availableSeats
-        // model.addAttribute("seats", seatsUtils.getAvailableSeats());
         List<KvTableDto> freeTablesPlusCurrenTable = kvTableService.getFreeTablesPlusCurrentTable(manyCustomers);
 
         model.addAttribute("tables", freeTablesPlusCurrenTable);
         // model.addAttribute("isAnySeatFree", isAnySeatFree);
         model.addAttribute("isAnySeatFree", true);
 
-        return "updateCustomer";
+        return "customers/updateCustomer";
     }
 
 

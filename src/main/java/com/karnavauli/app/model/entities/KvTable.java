@@ -20,8 +20,9 @@ public class KvTable {
     private String name;
     private Integer maxPlaces;
     private Integer occupiedPlaces;
-    @OneToMany(mappedBy = "kvTable")
-    private List<Customer> customer;
+    private Integer soldPlaces;
+    /*@OneToMany(mappedBy = "kvTable")
+    private List<Customer> customer;*/
     private String owner;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "ticket_id")

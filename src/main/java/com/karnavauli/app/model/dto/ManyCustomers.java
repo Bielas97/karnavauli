@@ -1,8 +1,6 @@
 package com.karnavauli.app.model.dto;
 
 import com.karnavauli.app.model.entities.User;
-import com.karnavauli.app.service.KvTableService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;

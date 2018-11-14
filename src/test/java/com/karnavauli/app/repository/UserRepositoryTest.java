@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.repository;
 
 import com.karnavauli.app.model.entities.User;
@@ -34,4 +35,4 @@ public class UserRepositoryTest {
         //then
         assertEquals("Michal", byUsername.getUsername());
     }
-}
+}*/

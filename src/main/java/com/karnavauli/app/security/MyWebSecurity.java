@@ -1,7 +1,6 @@
 package com.karnavauli.app.security;
 
 import com.karnavauli.app.model.enums.Role;
-import com.karnavauli.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -35,35 +33,6 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-       /* //czytanie z bazy uzytkownikow
-        for(int i=0; i<userService.getAll().size(); i++){
-//            UserDto userDtos = userService.getOneUser((long) i).get();
-            UserDto us = userService.getAll().get(i);
-            UserDto userDto = userService.getOneUser(us.getId()).get();
-            auth
-                    .inMemoryAuthentication()
-                    .withUser(userDto.getUsername()).password(userDto.getPassword()).roles(String.valueOf(userDto.getRole()));
-        }
-        if(userService.getAll().isEmpty()){
-            auth
-                    .inMemoryAuthentication()
-                    //todo jak ustawic tutaj number of tickets
-                    .withUser("bielas").password("1234").roles(String.valueOf(Role.CEO));
-        }*/
-
-        //wpisywanie na sztywno uzytkownikow
-        /*auth
-                .inMemoryAuthentication()
-                .withUser("user").password("1234").roles(String.valueOf(Role.USER))
-                .and()
-                .withUser("admin").password("1234").roles(String.valueOf(Role.ADMIN))
-                .and()
-                .withUser("admin_lazarski").password("1234").roles(String.valueOf(Role.LAZARSKI_ADMIN))
-                .and()
-                .withUser("admin_sggw").password("1234").roles(String.valueOf(Role.SGGW_ADMIN))
-                .and()
-                .withUser("admin_pw").password("1234").roles(String.valueOf(Role.PW_ADMIN));*/
         auth
                 .inMemoryAuthentication()
                 .withUser("user").password(passwordEncoder().encode("1234")).roles(String.valueOf(Role.CEO));

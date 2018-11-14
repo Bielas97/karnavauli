@@ -43,7 +43,7 @@ public class RegisterController {
         List<UserDto> users = userService.getAll();
         users.forEach(e -> e.setPassword(null));
         model.addAttribute("users", users);
-        return "showUsers";
+        return "users/showUsers";
     }
 
     @GetMapping("/register")
@@ -52,7 +52,7 @@ public class RegisterController {
         model.addAttribute("roles", Role.values());
         model.addAttribute("errors", new HashMap<>());
         model.addAttribute("formTickets", ticketService.getAll());
-        return "register";
+        return "users/register";
     }
 
     @PostMapping("/register")
@@ -61,7 +61,6 @@ public class RegisterController {
             BindingResult bindingResult,
             Model model
     ){
-        System.out.println("weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeszlo");
         if (bindingResult.hasErrors()) {
             System.out.println("errrrrrrrrrrrror");
             Map<String, String> errors
@@ -73,12 +72,9 @@ public class RegisterController {
             model.addAttribute("userDto", userDto);
             model.addAttribute("roles", Role.values());
             model.addAttribute("formTickets", ticketService.getAll());
-            return "register";
+            return "users/register";
         }
-
-        /*userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));*/
-        System.out.println(userDto);
-        userService.addOrUpdateUser(userDto);
+        userService.addUser(userDto);
         return "redirect:/";
     }
 }

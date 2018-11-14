@@ -42,14 +42,6 @@
                 <div class="checkbox-inline">
                     <label>Sprzedawcy:</label>
                     <label>
-                        <!--<input style="margin: 5px" th:each="e : ${sellers}" th:value="${e}" th:text="${e.username}" type="checkbox"
-                               th:field="*{ticketDealers}">-->
-                        <!--TODO-->
-                        <!--<ul class="list-inline">
-                            <li th:each="e, stat : ${sellers}" class="list-inline-item">
-                                <input type="checkbox" th:field="*{ticketDealers[__${stat.index}__].tickets}" th:text="${e.username}" th:value="${e.id}">
-                            </li>
-                        </ul>-->
                         <ul class="list-inline">
                             <li th:each="s, stat : ${sellers}" class="list-inline-item">
                                 <input type="checkbox" th:field="*{ticketDealers[__${stat.index}__].id}" th:text="${s.username}" th:value="${s.id}">

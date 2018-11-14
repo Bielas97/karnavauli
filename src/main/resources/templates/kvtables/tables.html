@@ -34,6 +34,7 @@
             <th scope="col">Nazwa</th>
             <th scope="col">Max miejsc</th>
             <th scope="col">Zajęte miejsca</th>
+            <th scope="col">Sprzedane miejsca</th>
             <th scope="col">Właściciel</th>
             <th scope="col">Akcje</th>
         </tr>
@@ -44,6 +45,7 @@
             <td th:text="${c.name}"></td>
             <td th:text="${c.maxPlaces}"></td>
             <td th:text="${c.occupiedPlaces}"></td>
+            <td th:text="${c.soldPlaces}"></td>
             <td th:text="${c.owner}"></td>
             <td>
                 <a class="btn btn-primary mr-2"

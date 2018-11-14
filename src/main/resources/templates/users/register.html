@@ -24,7 +24,7 @@
     <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
             <h2 class="mt-5">Zarejestruj nowego uzytkownika</h2>
-            <form th:action="@{/register}" method="post" th:object="${userDto}" >
+            <form th:action="@{/register}" method="post" th:object="${userDto}">
                 <div class="form-group">
                     <label class="h3" for="name">Username:</label>
                     <input id="name" class="form-control" type="text" th:field="*{username}"/>
@@ -56,11 +56,6 @@
                         <option th:each="e : ${roles}" th:value="${e}" th:text="${e}"></option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Bilety</label>
-                    <input type="checkbox" th:each="t : ${formTickets}" th:value="t" th:text="${t.shortName}"
-                            th:field="*{tickets}"/>
-                </div>
                 <div>
                     <input class="btn btn-success" type="submit" value="Register"/>
                     <input class="btn btn-danger" type="reset" value="Reset"/>
@@ -70,8 +65,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

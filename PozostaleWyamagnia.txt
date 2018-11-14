@@ -8,9 +8,9 @@ lista to do:
 	1.1 Wyswietlenie ktore stoliki sa wolne dla danej ilosci osob - jakas graficzka moze dac je na zielono? :)  DONE (bez kolorku)
 	1.2 uzupelnienie formularza sprzedawania biletow (/addCustomer) 		DONE
 	
-2. funkcjonalnosc usera:
+2. funkcjonalnosc usera:			DONE
 	2.1 dodanie kolumny number_of_tickets 				DONE
-	2.2 mozliwosc sprzedawania tak duzo biletow przez usera ile ma w komorce number_of_tickets
+	2.2 mozliwosc sprzedawania tak duzo biletow przez usera ile ma w komorce number_of_tickets DONE 
 		2.2.1 odejmowanie zawsze N od number_of_tickets przy sprzedawaniu N biletow		DONE
 		2.2.2 dodawanie zawsze 1 do number_of_tickets przy usuwaniu klienta				DONE
 		2.2.3 zmiana formularza rejestracji nowego sprzedawcy - wybranie ile sprzedawca moze sprzedawac biletow - ustawienie pola number_of_tickets     DONE
@@ -31,8 +31,21 @@ lista to do:
             uzykownik o loginie takim jak "shortName" moze sprzedawac tylko bilety ktore sa przypozadkowane do tej uczelni
         4.1.1 zmiana formularza updateTicket - dodanie selecta zamiast text - wybieranie ownera sposord tabelki "bilety" - fullName     DONE
         4.1.2 pokazywanie w /add/customers tylko tych biletow ktore są dostępne dla danego uzytkownika
+		
+		przyklad:
+		jest uzytkownik SGGW, dla niego sa tylko przypozadkowane bilety sggw(szkola glowna) i tylko te stoliki ktora sa powiazane z tym biletem maja sie wyswietlac
 
 5. dodanie widoku z cena jaka uzytkownik musi zaplacic plus reszte jaka trzeb mu wydac
+
+
+
+
+
+
+
+
+6. nie dziala usuwanie biletu
+7. Security - raz na pare przeladowan apliakcji nie moge ise zalogowac na konto - musze usuwac z bazy danych i na nowo wstawiac? - WTF?!
 
 **********
 TODO dlaczego przy dodawaniu usera musze odpalic program na nowo by sie na niego zalogowac?!

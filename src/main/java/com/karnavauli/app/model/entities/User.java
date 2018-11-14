@@ -5,14 +5,12 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-/*@Getter
-@Setter
-@EqualsAndHashCode*/
 @Data
 public class User {
     @Id
@@ -23,7 +21,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Integer numberOfTickets;
-    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER)
     @JoinTable(
             name = "User_Ticket",
             joinColumns = { @JoinColumn(name = "user_id") },
@@ -31,8 +29,8 @@ public class User {
     )
     private List<Ticket> tickets;
 
-    /*@Override
+    @Override
     public String toString() {
         return username;
-    }*/
+    }
 }

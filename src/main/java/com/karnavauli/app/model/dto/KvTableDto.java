@@ -1,9 +1,6 @@
 package com.karnavauli.app.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -17,8 +14,11 @@ public class KvTableDto {
     private String name;
     private Integer maxPlaces;
     private Integer occupiedPlaces;
+    private Integer soldPlaces;
     private List<CustomerDto> customer;
     private String owner;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private TicketDto ticketDto;
 
 

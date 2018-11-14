@@ -26,7 +26,7 @@
     <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
             <h2 class="mt-5">Dodaj nowy bilet</h2>
-            <form th:action="@{/addTicket}" method="post" th:object="${ticket}">
+            <form th:action="@{/ticket/update}" method="post" th:object="${ticket}">
                 <input type="text" th:field="*{id}" hidden="hidden"/>
                 <div class="form-group">
                     <label class="h3" for="name">Skrót:</label>
@@ -42,10 +42,13 @@
                 </div>
                 <div class="checkbox-inline">
                     <label>Sprzedawcy:</label>
-                    <!--TODO<label>
-                        <input th:each="e : ${role}" th:value="${e}" th:text="${e}" type="checkbox"
-                               th:field="*{ticketDealers}">
-                    </label>-->
+                    <label>
+                        <ul class="list-inline">
+                            <li th:each="s, stat : ${sellers}" class="list-inline-item">
+                                <input type="checkbox" th:field="*{ticketDealers[__${stat.index}__].id}" th:text="${s.username}" th:value="${s.id}">
+                            </li>
+                        </ul>
+                    </label>
                 </div>
                 <div class="radio">
                     <label>Czy jest uczelnią?</label>

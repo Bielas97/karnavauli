@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity(name = "klienci")
+@Entity
+@Table(name = "Klienci")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,7 +21,7 @@ public class Customer {
     private String name;
     @Column(name = "nazwisko")
     private String surname;
-    @Column(name = "wydział")
+    @Column(name = "wydzial")
     private String faculty;
     @Column(name = "czy_jest_index")
     private Boolean isIndex;

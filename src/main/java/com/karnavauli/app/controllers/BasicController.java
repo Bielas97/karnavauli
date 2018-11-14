@@ -54,41 +54,45 @@ public class BasicController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("error", "");
-        return "loginForm";
+        return "users/loginForm";
     }
 
     @GetMapping("/accessDenied")
     public String accessDenied() {
-        return "accessDenied";
+        return "errors/accessDenied";
     }
 
     @GetMapping("/login/error")
-    public String loginError(Model model)
-    {
+    public String loginError(Model model) {
         final String loginErrorMessage = "Nieprawidłowe dane logowania";
         model.addAttribute("error", loginErrorMessage);
-        return "loginForm";
+        return "users/loginForm";
     }
 
     @GetMapping("/tables")
-    public String tables(Model model){
+    public String tables(Model model) {
         model.addAttribute("tables", kvTableService.getAll());
-        return "tables";
+        return "kvtables/tables";
     }
 
     @GetMapping("/table/update/{id}")
-    public String bookTable(Model model, @PathVariable Long id){
+    public String bookTable(Model model, @PathVariable Long id) {
         model.addAttribute("kvTable", kvTableService.getOneKvTable(id).orElseThrow(NullPointerException::new));
         List<TicketDto> ticketDtos = ticketService.getAll();
         TicketDto ticketRegular = TicketDto.builder().fullName("regular").shortName("regular").build();
         ticketDtos.add(ticketRegular);
         model.addAttribute("tickets", ticketDtos);
-        return "updateTable";
+        return "kvtables/updateTable";
     }
 
     @PostMapping("/table/update")
-    public String bookTablePost(@ModelAttribute KvTableDto kvTable){
+    public String bookTablePost(@ModelAttribute KvTableDto kvTable) {
+        if (!kvTable.getOwner().equals("regular")) {
+            kvTable.setTicketDto(ticketService.getOneTicketByFullName(kvTable.getOwner()));
+        }
+        kvTable.setOccupiedPlaces(kvTable.getMaxPlaces());
         kvTableService.addOrUpdateKvTable(kvTable);
+        System.out.println(kvTable.getTicketDto());
 
         return "redirect:/tables";
     }
