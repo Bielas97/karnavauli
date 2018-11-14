@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -71,7 +72,9 @@ public class BasicController {
 
     @GetMapping("/tables")
     public String tables(Model model) {
-        model.addAttribute("tables", kvTableService.getAll());
+        List<KvTableDto> tables = kvTableService.getAll();
+        tables.sort(Comparator.comparing(KvTableDto::getName));
+        model.addAttribute("tables", tables);
         return "kvtables/tables";
     }
 

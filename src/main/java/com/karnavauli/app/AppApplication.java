@@ -34,7 +34,7 @@ public class AppApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		if (userRepository.findAll().stream().noneMatch(user -> user.getUsername().equals("bielas"))) {
-			userRepository.save(User.builder().numberOfTickets(9999).password(passwordEncoder.encode("1234")).role(Role.CEO).username("bielas").build());
+			userRepository.save(User.builder().numberOfTickets(9999).password(passwordEncoder.encode("kvAdmin")).role(Role.CEO).username("bielas").build());
 		}
 	}
 }
