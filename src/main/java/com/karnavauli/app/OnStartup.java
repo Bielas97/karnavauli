@@ -2,6 +2,7 @@ package com.karnavauli.app;
 
 import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.repository.KvTableRepository;
+import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -11,10 +12,17 @@ import org.springframework.stereotype.Component;
 public class OnStartup {
     private KvTableService kvTableService;
     private KvTableRepository kvTableRepository;
+    private CustomerService customerService;
 
-    public OnStartup(KvTableService kvTableService, KvTableRepository kvTableRepository) {
+    public OnStartup(KvTableService kvTableService, KvTableRepository kvTableRepository, CustomerService customerService) {
         this.kvTableService = kvTableService;
         this.kvTableRepository = kvTableRepository;
+        this.customerService = customerService;
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void initlizeMapOfOccupiedPlaces(){
+        customerService.initialFillAmountOfOccupiedPlaces();
     }
 
     /**

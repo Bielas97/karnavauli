@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,12 +26,20 @@ import java.util.stream.Collectors;
 public class CustomerService {
     private CustomerRepository customerRepository;
     private KvTableRepository kvTableRepository;
+    private TicketService ticketService;
     private UserService userService;
     private ModelMapper modelMapper;
 
-    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, UserService userService, ModelMapper modelMapper) {
+    private Map<String, Long> amountOfOccupiedPlaces = new HashMap<>();
+
+    public Map<String, Long> getAmountOfOccupiedPlaces() {
+        return amountOfOccupiedPlaces;
+    }
+
+    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, TicketService ticketService, UserService userService, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
         this.kvTableRepository = kvTableRepository;
+        this.ticketService = ticketService;
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
@@ -83,10 +91,9 @@ public class CustomerService {
 
     public void addManyCustomers(ManyCustomers manyCustomers) {
         KvTableDto kvTableDto = modelMapper.map(kvTableRepository.getOne(manyCustomers.getKvTableId()), KvTableDto.class);
-        if(kvTableDto.getSoldPlaces().equals(kvTableDto.getMaxPlaces())){
+        if (kvTableDto.getSoldPlaces().equals(kvTableDto.getMaxPlaces()) || kvTableDto.getSoldPlaces() > kvTableDto.getMaxPlaces()) {
             throw new MyException(ExceptionCode.MAX_PLACES, "ALL PLACES ARE SOLD EXCEPTION");
-        }
-        else {
+        } else {
             try {
                 for (int i = 0; i < manyCustomers.getCustomers().size(); i++) {
                     KvTable table = kvTableRepository.findById(manyCustomers.getCustomers().get(i).getKvTable().getId()).orElseThrow(NullPointerException::new);
@@ -145,6 +152,55 @@ public class CustomerService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "UPDATING CUSTOMER EXCEPTION: " + e.getMessage());
         }
+    }
+
+    public void initialFillAmountOfOccupiedPlaces() {
+        if (!customerRepository.findAll().isEmpty()) {
+            List<CustomerDto> allCustomers = getAll();
+            amountOfOccupiedPlaces = allCustomers.stream().collect(
+                    Collectors.groupingBy(cusDto -> cusDto.getKvTable().getName(), Collectors.counting()));
+        }
+    }
+
+    public void fillAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amount) {
+        if (amountOfOccupiedPlaces.isEmpty()) {
+            amountOfOccupiedPlaces.put(kvTableDto.getName(), (long) amount);
+        }
+        if (amountOfOccupiedPlaces.get(kvTableDto.getName()) != null) {
+            amountOfOccupiedPlaces.put(kvTableDto.getName(), amountOfOccupiedPlaces.get(kvTableDto.getName()) + amount);
+        }
+        System.out.println(amountOfOccupiedPlaces);
+    }
+
+    public void decrementAmountOfOccupiedPlaces(KvTableDto kvTableDto) {
+        System.out.println(amountOfOccupiedPlaces.get(kvTableDto.getName()));
+        Long decremention = amountOfOccupiedPlaces.get(kvTableDto.getName());
+        amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - 1);
+    }
+
+    public boolean OccupiedPlacesAreGreaterThanMax(KvTableDto kvTableDto) {
+        if (amountOfOccupiedPlaces.get(kvTableDto.getName()) != null) {
+            return amountOfOccupiedPlaces.get(kvTableDto.getName()) > kvTableDto.getMaxPlaces();
+        }
+        return false;
+    }
+
+    public int countPriceToBePaid(ManyCustomers manyCustomers) {
+        int price = 0;
+        for (CustomerDto customerDto : manyCustomers.getCustomers()){
+            if(!customerDto.getIsIndex()){
+                price += 190;
+            }
+            else{
+                if(customerDto.getKvTable().getName().charAt(1) != '0'){
+                    price += 140;
+                }
+                else {
+                    price += 150;
+                }
+            }
+        }
+        return price;
     }
 
 

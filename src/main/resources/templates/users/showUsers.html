@@ -16,7 +16,6 @@
         <th scope="col">id</th>
         <th scope="col">Username</th>
         <th scope="col">Rola</th>
-        <th scope="col">Liczba biletów</th>
     </tr>
     </thead>
     <tbody th:if="${!users.isEmpty()}">
@@ -24,7 +23,6 @@
         <td th:text="${c.id}"></td>
         <td th:text="${c.username}"></td>
         <td th:text="${c.role}"></td>
-        <td th:text="${c.numberOfTickets}"></td>
     </tr>
     </tbody>
 </table>

@@ -76,7 +76,7 @@
                     <th scope="col">Imie</th>
                     <th scope="col">Nazwisko</th>
                     <th scope="col">Miejsce</th>
-                    <th scope="col">Wydział</th>
+                    <th scope="col">ilość KV</th>
                     <th scope="col">Index?</th>
                     <th scope="col">sprzedawca</th>
                 </tr>
@@ -87,7 +87,7 @@
                     <td th:text="${c.name}"></td>
                     <td th:text="${c.surname}"></td>
                     <td th:text="${c.kvTable.name}"></td>
-                    <td th:text="${c.faculty}"></td>
+                    <td th:text="${c.amountOfKVAppearance}"></td>
                     <td th:text="${c.isIndex}"></td>
                     <td th:text="${c.user.username}"></td>
                     <td>

@@ -11,7 +11,7 @@ public class CustomerDto {
     private Long id;
     private String name;
     private String surname;
-    private String faculty;
+    private Integer amountOfKVAppearance;
     private Boolean isIndex;
     //TODO: czy tu powinien byc user czy userDto????? -----USERDTO nie dziala przy zamianie
     private User user;

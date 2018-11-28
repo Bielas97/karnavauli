@@ -21,8 +21,8 @@ public class Customer {
     private String name;
     @Column(name = "nazwisko")
     private String surname;
-    @Column(name = "wydzial")
-    private String faculty;
+    @Column(name = "ktory_raz_na_kv")
+    private Integer amountOfKVAppearance;
     @Column(name = "czy_jest_index")
     private Boolean isIndex;
     //many to one

@@ -1,9 +1,10 @@
 package com.karnavauli.app.controllers;
 
+import com.karnavauli.app.exceptions.ExceptionCode;
+import com.karnavauli.app.exceptions.MyException;
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
-import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.service.CustomerService;
@@ -30,6 +31,9 @@ public class CustomerController {
     private UserService userService;
     private KvTableService kvTableService;
     private TicketService ticketService;
+
+    private int priceToBePaid = 0;
+    private ManyCustomers customersWithPrice = null;
 
 
     public CustomerController(CustomerService customerService, UserService userService, KvTableService kvTableService, TicketService ticketService) {
@@ -86,20 +90,44 @@ public class CustomerController {
         }
         //liczba dostepnych biletow do sprzedania przez danego uzytkownika
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
-
+        //TODO:
         return "customers/customerForm";
     }
 
     @PostMapping("/addCustomer")
     public String addCustomerPost(/*@Valid*/ @ModelAttribute ManyCustomers manyCustomers, BindingResult result, Principal principal) {
-        Long id = manyCustomers.getKvTableId();
-        manyCustomers.setKvTable(kvTableService.getOneKvTable(id).get());
-        //kvTableService.incrementOccupiedPlaces(id, manyCustomers.getCustomers().size());
         User user = userService.getUserFromUsername(principal.getName());
         manyCustomers.setUserDto(user);
-        customerService.addManyCustomers(manyCustomers);
+        Long id = manyCustomers.getKvTableId();
+        kvTableService.getOneKvTable(id).ifPresent(kvTableDto -> {
+            manyCustomers.setKvTable(kvTableDto);
+            customerService.fillAmountOfOccupiedPlaces(kvTableDto, manyCustomers.getCustomers().size());
+            if (customerService.OccupiedPlacesAreGreaterThanMax(kvTableDto)) {
+                System.out.println("leci wyjatek");
+                System.out.println(customerService.getAmountOfOccupiedPlaces());
+                throw new MyException(ExceptionCode.MAX_PLACES, "NOT ANYMORE PLACES LEFT EXCEPTION");
+            }
+        });
 
-        return "redirect:/showCustomers";
+        //manyCustomers.setKvTable(kvTableService.getOneKvTable(id).get());
+        //kvTableService.incrementOccupiedPlaces(id, manyCustomers.getCustomers().size());
+
+        customerService.addManyCustomers(manyCustomers);
+        priceToBePaid = customerService.countPriceToBePaid(manyCustomers);
+        System.out.println(priceToBePaid);
+        customersWithPrice = manyCustomers;
+
+        return "redirect:/price";
+    }
+
+    @GetMapping("/price")
+    public String countPriceToBePaid(Model model) {
+        System.out.println("----->" + priceToBePaid);
+        model.addAttribute("priceToBePaid", priceToBePaid);
+        int elo = 0;
+        model.addAttribute(elo);
+
+        return "calculator/price";
     }
 
    /* @PostMapping("/addCustomer")
@@ -207,7 +235,13 @@ public class CustomerController {
     @GetMapping("/customer/remove/{id}")
     public String customerRemove(@PathVariable Long id) {
         Optional<CustomerDto> customerDto = customerService.getOneCustomer(id);
-        //customerDto.ifPresent(c -> kvTableService.decrementOccupiedPlaces(c.getKvTable().getId()));
+        KvTableDto kvTableDto = customerDto.get().getKvTable();
+        customerService.decrementAmountOfOccupiedPlaces(kvTableDto);
+        /*customerDto.ifPresent(c -> {
+            kvTableService.getOneKvTable(c.getKvTable().getId()).ifPresent(kvTableDto -> {
+                customerService.decrementAmountOfOccupiedPlaces(kvTableDto);
+            });
+        });*/
         customerService.deleteCustomer(id);
         //seatsUtils.updateTables();
         return "redirect:/showCustomers";

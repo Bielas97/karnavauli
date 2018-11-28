@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Price</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div style="background: black">
+    <div id="header">
+        <br>
+        <h2 style="text-align: center; color: white">
+            <a href="/" style="text-decoration: none; color: white;">System Sprzedaży biletów na bal Karnavauli 2019</a>
+        </h2>
+        <br>
+    </div>
+</div>
+
+<br>
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div>
+            <label th:text="'Do zapłaty: ' + ${priceToBePaid} + ' zł'"></label>
+        </div>
+        <div>
+            <input id='first' type="text" class="form-control formBlock" name="bus_ticket"  placeholder="pieniądze klienta..."/><br />
+            Reszta: <span id="total_expenses1"></span>
+        </div>
+        <a class="btn btn-success" th:href="@{/showCustomers}">Zapłacone</a>
+    </div>
+</div>
+
+
+
+<script th:inline="javascript">
+    $('input').keyup(function(){ // run anytime the value changes
+        var firstValue  = Number($('#first').val());   // get value of field
+        /*<![CDATA[*/
+        var moneyToBePaid = /*[[${priceToBePaid}]]*/ 'price';
+        /*]]>*/
+
+        $('#total_expenses1').html(firstValue - moneyToBePaid); // add them and output it
+        document.getElementById('total_expenses2').value = firstValue - moneyToBePaid;
+// add them and output it
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+</html>

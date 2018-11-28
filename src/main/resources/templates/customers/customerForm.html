@@ -54,28 +54,30 @@
                                 <div class="form-group">
                                     <label th:for="'name' + ${stat.index}">Imię:</label>
                                     <input th:id="'name' + ${stat.index}" type="text" class="form-control"
-                                           th:field="*{customers[__${stat.index}__].name}"/>
+                                           th:field="*{customers[__${stat.index}__].name}" required/>
                                 </div>
                                 <div class="form-group">
                                     <label th:for="surname">Nazwisko:</label>
                                     <input th:id="surname" type="text" class="form-control"
-                                           th:field="*{customers[__${stat.index}__].surname}"/>
+                                           th:field="*{customers[__${stat.index}__].surname}" required/>
                                 </div>
                                 <div class="form-group">
-                                    <label th:for="faculty">Wydział:</label>
-                                    <input th:id="faculty" type="text" class="form-controll"
-                                            th:field="*{customers[__${stat.index}__].faculty}">
+                                    <label th:for="faculty">Który raz na kv?:</label>
+                                    <input th:id="faculty" type="number" class="form-controll"
+                                           th:field="*{customers[__${stat.index}__].amountOfKVAppearance}" required>
                                 </div>
                                 <div class="form-group">
                                     <label th:for="isIndex">Czy jest index?</label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="optradio" th:value="true"
-                                               th:field="*{customers[__${stat.index}__].isIndex}" checked>TAK
+                                        <input type="radio" name="optradio" th:value="true" id="myCheck1"
+                                               th:field="*{customers[__${stat.index}__].isIndex}" required>TAK
                                     </label>
                                     <label class="radio-inline" style="margin: 5px">
-                                        <input type="radio" name="optradio"
+                                        <input type="radio" name="optradio" id="myCheck"
                                                th:field="*{customers[__${stat.index}__].isIndex}" th:value="false">NIE
                                     </label>
+                                    <p id="false" style="display:block">Cena: 190 zł</p>
+                                    <p id="true" style="display:none">Cena: 150 zł</p>
                                 </div>
 
                             </li>

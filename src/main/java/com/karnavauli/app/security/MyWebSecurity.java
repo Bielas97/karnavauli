@@ -55,6 +55,7 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ticket/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/ticket/remove/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/addTicket").hasAnyRole(String.valueOf(Role.CEO))
+                .antMatchers("/tables").hasAnyRole(String.valueOf(Role.CEO))
                 .anyRequest().authenticated() // pozostale zadania maja byc objete logowaniem
 
                 //strona addCustomer jest dla kazdego i to mowi powyzsza linijka
