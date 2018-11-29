@@ -155,18 +155,21 @@ public class CustomerService {
     }
 
     public void initialFillAmountOfOccupiedPlaces() {
+        amountOfOccupiedPlaces.clear();
         if (!customerRepository.findAll().isEmpty()) {
             List<CustomerDto> allCustomers = getAll();
             amountOfOccupiedPlaces = allCustomers.stream().collect(
                     Collectors.groupingBy(cusDto -> cusDto.getKvTable().getName(), Collectors.counting()));
         }
+        System.out.println(amountOfOccupiedPlaces);
     }
 
     public void fillAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amount) {
-        if (amountOfOccupiedPlaces.isEmpty()) {
+        if (amountOfOccupiedPlaces.isEmpty() || amountOfOccupiedPlaces.get(kvTableDto.getName()) == null) {
+            System.out.println("empty");
             amountOfOccupiedPlaces.put(kvTableDto.getName(), (long) amount);
-        }
-        if (amountOfOccupiedPlaces.get(kvTableDto.getName()) != null) {
+        } else {
+            System.out.println("++++" + amountOfOccupiedPlaces.get(kvTableDto.getName()));
             amountOfOccupiedPlaces.put(kvTableDto.getName(), amountOfOccupiedPlaces.get(kvTableDto.getName()) + amount);
         }
         System.out.println(amountOfOccupiedPlaces);
@@ -187,15 +190,13 @@ public class CustomerService {
 
     public int countPriceToBePaid(ManyCustomers manyCustomers) {
         int price = 0;
-        for (CustomerDto customerDto : manyCustomers.getCustomers()){
-            if(!customerDto.getIsIndex()){
+        for (CustomerDto customerDto : manyCustomers.getCustomers()) {
+            if (!customerDto.getIsIndex()) {
                 price += 190;
-            }
-            else{
-                if(customerDto.getKvTable().getName().charAt(1) != '0'){
+            } else {
+                if (customerDto.getKvTable().getName().charAt(1) != '0') {
                     price += 140;
-                }
-                else {
+                } else {
                     price += 150;
                 }
             }

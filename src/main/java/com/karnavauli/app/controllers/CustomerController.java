@@ -101,6 +101,7 @@ public class CustomerController {
         Long id = manyCustomers.getKvTableId();
         kvTableService.getOneKvTable(id).ifPresent(kvTableDto -> {
             manyCustomers.setKvTable(kvTableDto);
+            System.out.println("size: " + manyCustomers.getCustomers().size());
             customerService.fillAmountOfOccupiedPlaces(kvTableDto, manyCustomers.getCustomers().size());
             if (customerService.OccupiedPlacesAreGreaterThanMax(kvTableDto)) {
                 System.out.println("leci wyjatek");
