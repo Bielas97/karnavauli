@@ -161,22 +161,17 @@ public class CustomerService {
             amountOfOccupiedPlaces = allCustomers.stream().collect(
                     Collectors.groupingBy(cusDto -> cusDto.getKvTable().getName(), Collectors.counting()));
         }
-        System.out.println(amountOfOccupiedPlaces);
     }
 
     public void fillAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amount) {
         if (amountOfOccupiedPlaces.isEmpty() || amountOfOccupiedPlaces.get(kvTableDto.getName()) == null) {
-            System.out.println("empty");
             amountOfOccupiedPlaces.put(kvTableDto.getName(), (long) amount);
         } else {
-            System.out.println("++++" + amountOfOccupiedPlaces.get(kvTableDto.getName()));
             amountOfOccupiedPlaces.put(kvTableDto.getName(), amountOfOccupiedPlaces.get(kvTableDto.getName()) + amount);
         }
-        System.out.println(amountOfOccupiedPlaces);
     }
 
     public void decrementAmountOfOccupiedPlaces(KvTableDto kvTableDto) {
-        System.out.println(amountOfOccupiedPlaces.get(kvTableDto.getName()));
         Long decremention = amountOfOccupiedPlaces.get(kvTableDto.getName());
         amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - 1);
     }

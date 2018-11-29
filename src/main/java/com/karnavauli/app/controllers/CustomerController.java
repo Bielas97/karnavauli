@@ -11,6 +11,7 @@ import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@Slf4j
 public class CustomerController {
     private CustomerService customerService;
     private UserService userService;
@@ -101,11 +103,9 @@ public class CustomerController {
         Long id = manyCustomers.getKvTableId();
         kvTableService.getOneKvTable(id).ifPresent(kvTableDto -> {
             manyCustomers.setKvTable(kvTableDto);
-            System.out.println("size: " + manyCustomers.getCustomers().size());
             customerService.fillAmountOfOccupiedPlaces(kvTableDto, manyCustomers.getCustomers().size());
             if (customerService.OccupiedPlacesAreGreaterThanMax(kvTableDto)) {
-                System.out.println("leci wyjatek");
-                System.out.println(customerService.getAmountOfOccupiedPlaces());
+                log.error("leci wyjatek");
                 throw new MyException(ExceptionCode.MAX_PLACES, "NOT ANYMORE PLACES LEFT EXCEPTION");
             }
         });
@@ -115,7 +115,6 @@ public class CustomerController {
 
         customerService.addManyCustomers(manyCustomers);
         priceToBePaid = customerService.countPriceToBePaid(manyCustomers);
-        System.out.println(priceToBePaid);
         customersWithPrice = manyCustomers;
 
         return "redirect:/price";
