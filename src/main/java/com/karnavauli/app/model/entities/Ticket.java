@@ -21,8 +21,6 @@ public class Ticket {
     private String shortName;
     @Column(name = "pelna_nazwa")
     private String fullName;
-    @Column(name = "cena")
-    private Double price;
     @Column(name = "uczelnia")
     private Boolean isUni;
     @ManyToMany(mappedBy = "tickets", fetch = FetchType.EAGER)

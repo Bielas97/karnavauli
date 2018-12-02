@@ -29,6 +29,25 @@
         <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
 
             <div class="row">
+                <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
+
+                    <table>
+                        <tr>
+                            <th>stolik</th>
+                            <th>wolne miejsca</th>
+                        </tr>
+                        <tr th:each="instance : ${freeTablesForUser}">
+                            <td bgcolor="#F0F8FF" th:text="${instance.key}"></td>
+                            <td bgcolor="#FAEBD7" th:text="${instance.value}"></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
 
                 <div class="col-5">
                     <img src="/img/map_hall.jpg" width="400"/>

@@ -16,7 +16,6 @@ public class TicketDto {
     private Long id;
     private String shortName;
     private String fullName;
-    private Double price;
     private Boolean isUni;
     private List<User> ticketDealers;
     private List<KvTableDto> tablesDto;

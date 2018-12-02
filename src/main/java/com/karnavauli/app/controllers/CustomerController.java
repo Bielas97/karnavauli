@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -92,7 +89,11 @@ public class CustomerController {
         }
         //liczba dostepnych biletow do sprzedania przez danego uzytkownika
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
-        //TODO:
+
+
+        Map<String, Integer> getFreeTablesForUser = ticketService.getFreeForUser(userService.getUserDtoFromUsername(principal.getName()));
+        model.addAttribute("freeTablesForUser", getFreeTablesForUser);
+
         return "customers/customerForm";
     }
 
@@ -105,6 +106,7 @@ public class CustomerController {
             manyCustomers.setKvTable(kvTableDto);
             customerService.fillAmountOfOccupiedPlaces(kvTableDto, manyCustomers.getCustomers().size());
             if (customerService.OccupiedPlacesAreGreaterThanMax(kvTableDto)) {
+                customerService.decrementAmountOfOccupiedPlaces(kvTableDto, manyCustomers.getCustomers().size());
                 log.error("leci wyjatek");
                 throw new MyException(ExceptionCode.MAX_PLACES, "NOT ANYMORE PLACES LEFT EXCEPTION");
             }
@@ -117,12 +119,12 @@ public class CustomerController {
         priceToBePaid = customerService.countPriceToBePaid(manyCustomers);
         customersWithPrice = manyCustomers;
 
+
         return "redirect:/price";
     }
 
     @GetMapping("/price")
     public String countPriceToBePaid(Model model) {
-        System.out.println("----->" + priceToBePaid);
         model.addAttribute("priceToBePaid", priceToBePaid);
         int elo = 0;
         model.addAttribute(elo);
@@ -188,6 +190,7 @@ public class CustomerController {
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
         //nazwa zalogowanego usera
         model.addAttribute("user", principal.getName());
+        model.addAttribute("mapa", customerService.getAmountOfOccupiedPlaces());
         return "customers/customers";
     }
 

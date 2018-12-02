@@ -3,7 +3,10 @@ package com.karnavauli.app.service;
 import com.karnavauli.app.exceptions.ExceptionCode;
 import com.karnavauli.app.exceptions.MyException;
 import com.karnavauli.app.model.dto.KvTableDto;
+import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.dto.TicketDto;
+import com.karnavauli.app.model.dto.UserDto;
+import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.repository.TicketRepository;
@@ -12,10 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,13 +24,12 @@ public class TicketService {
     private ModelMapper modelMapper;
     private TicketRepository ticketRepository;
     private UserRepository userRepository;
-    private UserService userService;
 
-    public TicketService(ModelMapper modelMapper, TicketRepository ticketRepository, UserRepository userRepository, UserService userService) {
+
+    public TicketService(ModelMapper modelMapper, TicketRepository ticketRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
     public void addOrUpdateTicket(TicketDto ticketDto) {
@@ -60,9 +59,9 @@ public class TicketService {
     }
 
     public TicketDto getOneTicketByFullName(String fullname) {
-        try{
+        try {
             return modelMapper.map(ticketRepository.findByFullName(fullname), TicketDto.class);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET TICKET BY FULL NAME EXCEPTION: " + e.getMessage());
         }
     }
@@ -82,12 +81,12 @@ public class TicketService {
         return tickets.stream()
                 .map(this::setRolesWithDelimiter)
                 .collect(Collectors.toList());*/
-        try{
+        try {
             return ticketRepository.findAll()
                     .stream()
                     .map(c -> modelMapper.map(c, TicketDto.class))
                     .collect(Collectors.toList());
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GETTING ALL TICKETS EXCEPTION: " + e.getMessage());
         }
     }
@@ -117,9 +116,21 @@ public class TicketService {
         }
     }
 
+
+    public Map<String, Integer> getFreeForUser(UserDto userDto){
+        List<KvTableDto> kvTablesForUser = getTablesForUser(userDto.getId());
+        Map<String, Integer> freeTablesForUser = new HashMap<>();
+
+        kvTablesForUser.forEach(kvTableDto -> {
+            freeTablesForUser.put(kvTableDto.getName(), kvTableDto.getMaxPlaces()-kvTableDto.getSoldPlaces());
+        });
+
+        return freeTablesForUser;
+    }
+
+
     public List<KvTableDto> getTablesForUser(Long userId) {
         try {
-            System.out.println("=======" + userRepository.findById(userId).get().getTickets());
             return userRepository.findById(userId).orElseThrow(NullPointerException::new)
                     .getTickets()
                     .stream()
@@ -134,9 +145,9 @@ public class TicketService {
     }
 
     public void removeTicketDealers(TicketDto ticketDto) {
-        try{
+        try {
             ticketDto.getTicketDealers().clear();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "REMOVE TICKET DEALERS EXCEPTION: " + e.getMessage());
         }
     }
@@ -148,7 +159,7 @@ public class TicketService {
                     .map(User::getUsername)
                     .collect(Collectors.toSet());
             ticketDto.getTicketDealers().removeIf(user -> usersNames.contains(user.getUsername()));
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "REMOVE DUPLICATES FROM TICKET DEALERS EXCEPTION: " + e.getMessage());
         }
     }

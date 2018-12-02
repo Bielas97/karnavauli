@@ -176,6 +176,11 @@ public class CustomerService {
         amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - 1);
     }
 
+    public void decrementAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amountOfDecremention) {
+        Long decremention = amountOfOccupiedPlaces.get(kvTableDto.getName());
+        amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - amountOfDecremention);
+    }
+
     public boolean OccupiedPlacesAreGreaterThanMax(KvTableDto kvTableDto) {
         if (amountOfOccupiedPlaces.get(kvTableDto.getName()) != null) {
             return amountOfOccupiedPlaces.get(kvTableDto.getName()) > kvTableDto.getMaxPlaces();
@@ -198,6 +203,7 @@ public class CustomerService {
         }
         return price;
     }
+
 
 
 }
