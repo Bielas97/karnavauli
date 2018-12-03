@@ -92,7 +92,9 @@ public class CustomerController {
 
 
         Map<String, Integer> getFreeTablesForUser = ticketService.getFreeForUser(userService.getUserDtoFromUsername(principal.getName()));
-        model.addAttribute("freeTablesForUser", getFreeTablesForUser);
+        model.addAttribute("freeTablesForUserGroundFloor", ticketService.getGroundFloorTables(getFreeTablesForUser));
+        model.addAttribute("freeTablesForUserFirstFloor", ticketService.getFirstFloorTables(getFreeTablesForUser));
+        model.addAttribute("freeTablesForUserSecondFloor", ticketService.getSecondFloorTables(getFreeTablesForUser));
 
         return "customers/customerForm";
     }

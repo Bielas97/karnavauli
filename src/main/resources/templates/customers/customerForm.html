@@ -6,6 +6,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
+
+    <style>
+        .vl {
+            border-left: 6px solid green;
+            height: 500px;
+        }
+    </style>
 </head>
 <body>
 
@@ -28,22 +35,6 @@
 
         <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
 
-            <div class="row">
-                <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
-
-                    <table>
-                        <tr>
-                            <th>stolik</th>
-                            <th>wolne miejsca</th>
-                        </tr>
-                        <tr th:each="instance : ${freeTablesForUser}">
-                            <td bgcolor="#F0F8FF" th:text="${instance.key}"></td>
-                            <td bgcolor="#FAEBD7" th:text="${instance.value}"></td>
-                        </tr>
-                    </table>
-
-                </div>
-            </div>
 
             <hr>
 
@@ -107,6 +98,53 @@
 
             </div>
         </div>
+
+        <hr>
+        <hr>
+
+        <div class="row">
+            <div class="col-4">
+
+                <label>Parter</label>
+                <table>
+                    <tr>
+                        <th>stolik</th>
+                        <th>wolne miejsca</th>
+                    </tr>
+                    <tr th:each="instance : ${freeTablesForUserGroundFloor}">
+                        <td bgcolor="#F0F8FF" th:text="${instance.key}"></td>
+                        <td bgcolor="#FAEBD7" th:text="${instance.value}"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-4">
+                <label>Piętor 1</label>
+                <table>
+                    <tr>
+                        <th>stolik</th>
+                        <th>wolne miejsca</th>
+                    </tr>
+                    <tr th:each="instance : ${freeTablesForUserFirstFloor}">
+                        <td bgcolor="#F0F8FF" th:text="${instance.key}"></td>
+                        <td bgcolor="#FAEBD7" th:text="${instance.value}"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-4">
+                <label>Piętro 2</label>
+                <table>
+                    <tr>
+                        <th>stolik</th>
+                        <th>wolne miejsca</th>
+                    </tr>
+                    <tr th:each="instance : ${freeTablesForUserSecondFloor}">
+                        <td bgcolor="#F0F8FF" th:text="${instance.key}"></td>
+                        <td bgcolor="#FAEBD7" th:text="${instance.value}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>
 

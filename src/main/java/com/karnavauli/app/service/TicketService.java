@@ -128,6 +128,25 @@ public class TicketService {
         return freeTablesForUser;
     }
 
+    public Map<String, Integer> getGroundFloorTables(Map<String, Integer> map){
+        return map.entrySet()
+                .stream()
+                .filter(m -> m.getKey().charAt(1) == '0')
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+    public Map<String, Integer> getFirstFloorTables(Map<String, Integer> map){
+        return map.entrySet()
+                .stream()
+                .filter(m -> m.getKey().charAt(1) == '1')
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+    public Map<String, Integer> getSecondFloorTables(Map<String, Integer> map){
+        return map.entrySet()
+                .stream()
+                .filter(m -> m.getKey().charAt(1) == '2')
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
 
     public List<KvTableDto> getTablesForUser(Long userId) {
         try {
