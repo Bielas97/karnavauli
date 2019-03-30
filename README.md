@@ -24,7 +24,7 @@ Data provided currently is the data used for Amazon Web Services to the account 
 
 ## Technology Stack
 
-Java 1.8, springboot, AWS, MySql, Maven
+Java 1.8, springboot, AWS, MySql, Maven, thymeleaf
 
 ## Copyright
 
