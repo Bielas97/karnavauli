@@ -39,6 +39,7 @@ public class OnStartup {
 
         if (kvTableRepository.findAll().isEmpty() || kvTableRepository.findAll().size() < 91) {
             for (int i = 1; i < 92; i++) {
+                System.out.println(i);
                 if (i < 13) {
                     kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("A0" + i).maxPlaces(10).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
                 } else if (i < 22) {
