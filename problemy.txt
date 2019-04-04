@@ -1,0 +1,10 @@
+MAŁO WAŻNE:
+-przy koncu rezerwacji wyswietlanie ile do zaplaty
+-powtarza sie sprzedawca przy zmianie biletu
+
+
+WAŻNE:
+
+
+
+KRYTYCZNE:
