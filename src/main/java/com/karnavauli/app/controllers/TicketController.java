@@ -44,18 +44,7 @@ public class TicketController {
 
     @PostMapping("/addTicket")
     public String addTicketPost(@ModelAttribute TicketDto ticketDto, BindingResult result, Principal principal) {
-        //List<User> users = Collections.singletonList(userService.getUserFromUsername(principal.getName()));
-        //ticketDto.setTicketDealers(users);
-        //System.out.println(ticketService.getTablesForUser(userService.getUserFromUsername(principal.getName()).getId()));
-        //UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
-        //userService.addUsersToTickets(userService.getUserDtoFromUsername(principal.getName()), ticketDto);
         ticketService.addTicket(userService.getUserDtoFromUsername(principal.getName()), ticketDto);
-        //TODO
-        //ticketService.addTicketsToUsers(ticketDto);
-
-        //System.out.println("----------------------" + ticketService.getTablesForUser(userService.getUserDtoFromUsername(principal.getName()).getId()));
-        // ticketService.addOrUpdateTicket(ticketDto);
-        //System.out.println(ticketDto);
         return "redirect:/tickets";
     }
 
@@ -64,30 +53,19 @@ public class TicketController {
         model.addAttribute("role", Role.values());
         model.addAttribute("ticket", ticketService.getOneTicket(id).orElseThrow(NullPointerException::new));
         model.addAttribute("sellers", userService.getAll());
-        TicketDto ticketDto = ticketService.getOneTicket(id).orElseThrow(NullPointerException::new);
-        //06-04-2019
-        //ticketService.removeTicketDealers(ticketDto);
         return "tickets/updateTicket";
     }
 
     @PostMapping("/ticket/update")
     public String ticketUpdatePost(@ModelAttribute TicketDto ticketDto, Principal principal) {
         UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
-
         ticketService.updateTicket(userDto, ticketDto);
-        //ticketService.addTicket(userDto, ticketDto);
-
-        //TODO: tutaj zakomentowalem usersrvice 04-04-2019
-        //userService.addUsersToTickets(userDto, ticketDto);
-
-        //ticketService.addTicketsToUsers(ticketDto);
-        //ticketService.addOrUpdateTicket(ticketDto);
         return "redirect:/tickets";
     }
 
     @GetMapping("/ticket/remove/{id}")
-    public String ticketRemove(@PathVariable Long id) {
-        ticketService.deleteTicket(id);
+    public String ticketRemove(@PathVariable Long id, Principal principal) {
+        ticketService.deleteTicket(id, userService.getUserDtoFromUsername(principal.getName()));
         return "redirect:/tickets";
     }
 }

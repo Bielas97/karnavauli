@@ -25,11 +25,9 @@ import java.util.stream.Collectors;
 public class RegisterController {
     private UserService userService;
     private TicketService ticketService;
-    /*private PasswordEncoder passwordEncoder;*/
 
-    public RegisterController(UserService userService,/*, PasswordEncoder passwordEncoder*/TicketService ticketService) {
+    public RegisterController(UserService userService, TicketService ticketService) {
         this.userService = userService;
-        /*this.passwordEncoder = passwordEncoder;*/
         this.ticketService = ticketService;
     }
 
@@ -40,9 +38,7 @@ public class RegisterController {
 
     @GetMapping("/users")
     public String showUsers(Model model){
-        List<UserDto> users = userService.getAll();
-        users.forEach(e -> e.setPassword(null));
-        model.addAttribute("users", users);
+        model.addAttribute("users", userService.getAll());
         return "users/showUsers";
     }
 
@@ -62,7 +58,6 @@ public class RegisterController {
             Model model
     ){
         if (bindingResult.hasErrors()) {
-            System.out.println("errrrrrrrrrrrror");
             Map<String, String> errors
                     = bindingResult
                     .getFieldErrors()

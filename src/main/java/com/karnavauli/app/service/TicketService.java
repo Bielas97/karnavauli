@@ -42,8 +42,13 @@ public class TicketService {
         }
     }
 
-    public void deleteTicket(Long id) {
+    public void deleteTicket(Long id, UserDto userDto) {
         try {
+            //TODO zapytac - nie da sie moze jakiegos cascade dac na userze zeby tego nie robic??
+            userDto.getTickets()
+                    .removeIf(ticket -> ticket.getId().equals(id));
+            userRepository.save(modelMapper.map(userDto, User.class));
+
             ticketRepository.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();

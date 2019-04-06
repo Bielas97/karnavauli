@@ -21,7 +21,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Integer numberOfTickets;
-    @ManyToMany(cascade = {CascadeType.REFRESH , CascadeType.PERSIST, CascadeType.REFRESH , CascadeType.DETACH, CascadeType.MERGE},  fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.REFRESH , CascadeType.PERSIST , CascadeType.DETACH, CascadeType.MERGE},  fetch = FetchType.EAGER)
     @JoinTable(
             name = "User_Ticket",
             joinColumns = { @JoinColumn(name = "user_id") },
