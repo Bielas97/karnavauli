@@ -47,9 +47,11 @@ public class TicketController {
         //List<User> users = Collections.singletonList(userService.getUserFromUsername(principal.getName()));
         //ticketDto.setTicketDealers(users);
         //System.out.println(ticketService.getTablesForUser(userService.getUserFromUsername(principal.getName()).getId()));
-        UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
-        userService.addUsersToTickets(userDto);
-        ticketService.addTicketsToUsers(ticketDto);
+        //UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
+        //userService.addUsersToTickets(userService.getUserDtoFromUsername(principal.getName()), ticketDto);
+        ticketService.addTicket(userService.getUserDtoFromUsername(principal.getName()), ticketDto);
+        //TODO
+        //ticketService.addTicketsToUsers(ticketDto);
 
         //System.out.println("----------------------" + ticketService.getTablesForUser(userService.getUserDtoFromUsername(principal.getName()).getId()));
         // ticketService.addOrUpdateTicket(ticketDto);
@@ -63,15 +65,22 @@ public class TicketController {
         model.addAttribute("ticket", ticketService.getOneTicket(id).orElseThrow(NullPointerException::new));
         model.addAttribute("sellers", userService.getAll());
         TicketDto ticketDto = ticketService.getOneTicket(id).orElseThrow(NullPointerException::new);
-        ticketService.removeTicketDealers(ticketDto);
+        //06-04-2019
+        //ticketService.removeTicketDealers(ticketDto);
         return "tickets/updateTicket";
     }
 
     @PostMapping("/ticket/update")
     public String ticketUpdatePost(@ModelAttribute TicketDto ticketDto, Principal principal) {
         UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
-        userService.addUsersToTickets(userDto);
-        ticketService.addTicketsToUsers(ticketDto);
+
+        ticketService.updateTicket(userDto, ticketDto);
+        //ticketService.addTicket(userDto, ticketDto);
+
+        //TODO: tutaj zakomentowalem usersrvice 04-04-2019
+        //userService.addUsersToTickets(userDto, ticketDto);
+
+        //ticketService.addTicketsToUsers(ticketDto);
         //ticketService.addOrUpdateTicket(ticketDto);
         return "redirect:/tickets";
     }

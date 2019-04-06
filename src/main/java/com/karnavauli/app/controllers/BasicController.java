@@ -38,21 +38,6 @@ public class BasicController {
         return "index";
     }
 
-    @GetMapping("/user")
-    public String testUser() {
-        return "testUser";
-    }
-
-    @GetMapping("/admin")
-    public String testAdmin() {
-        return "testAdmin";
-    }
-
-    @GetMapping("/uczelnie")
-    public String testUczelnie() {
-        return "testUczelnie";
-    }
-
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("error", "");
@@ -74,7 +59,6 @@ public class BasicController {
     @GetMapping("/tables")
     public String tables(Model model) {
         List<KvTableDto> tables = kvTableService.getAll();
-        tables.sort(Comparator.comparing(KvTableDto::getName));
         model.addAttribute("tables", tables);
         return "kvtables/tables";
     }

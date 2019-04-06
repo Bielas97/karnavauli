@@ -23,15 +23,16 @@ public class Ticket {
     private String fullName;
     @Column(name = "uczelnia")
     private Boolean isUni;
-    @ManyToMany(mappedBy = "tickets", fetch = FetchType.EAGER)
+
+    //06-0402109 zamineiam to relacje na UNIDIRECTIONAL
+    /*@ManyToMany(mappedBy = "tickets", fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<User> ticketDealers;
+    private List<User> ticketDealers;*/
+
     @OneToMany(mappedBy = "ticket")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<KvTable> tables;
-
-
 
 }

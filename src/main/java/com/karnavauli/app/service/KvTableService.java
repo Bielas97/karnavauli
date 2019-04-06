@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,6 +65,7 @@ public class KvTableService {
             return kvTableRepository.findAll()
                     .stream()
                     .map(kvTable -> modelMapper.map(kvTable, KvTableDto.class))
+                    .sorted(Comparator.comparing(KvTableDto::getName))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GETTING ALL KVTABLES EXCEPTION: " + e.getMessage());
