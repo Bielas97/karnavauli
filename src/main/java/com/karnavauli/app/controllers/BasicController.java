@@ -32,7 +32,6 @@ public class BasicController {
     @GetMapping("/")
     public String welcome(Model model, Principal principal) {
         String username = principal.getName();
-        //liczba dostepnych biletow do sprzedania przez danego uzytkownika
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
         model.addAttribute("user", username);
         return "index";
@@ -58,8 +57,7 @@ public class BasicController {
 
     @GetMapping("/tables")
     public String tables(Model model) {
-        List<KvTableDto> tables = kvTableService.getAll();
-        model.addAttribute("tables", tables);
+        model.addAttribute("tables", kvTableService.getAll());
         return "kvtables/tables";
     }
 

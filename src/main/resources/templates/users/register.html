@@ -8,6 +8,9 @@
 </head>
 <body>
 
+
+
+
 <div style="background: black">
     <div id="header">
         <br>
@@ -50,6 +53,16 @@
                     <label class="h3" for="numberOfTickets">Liczba biletów</label>
                     <input id="numberOfTickets" class="form-control" type="number" th:field="*{numberOfTickets}"/>
                 </div>
+                <div class="checkbox-inline">
+                    <label>Bilety:</label>
+                    <label>
+                        <ul class="list-inline">
+                            <li th:each="s, stat : ${formTickets}" class="list-inline-item">
+                                <input type="checkbox" th:field="*{tickets[__${stat.index}__].id}" th:text="${s.fullName}" th:value="${s.id}">
+                            </li>
+                        </ul>
+                    </label>
+                </div>
                 <div class="form-group">
                     <label>Role:</label>
                     <select th:field="*{role}">
@@ -57,7 +70,7 @@
                     </select>
                 </div>
                 <div>
-                    <input class="btn btn-success" type="submit" value="Register"/>
+                    <input class="btn btn-success" type="submit" value="Register" onclick="return btnClick()"/>
                     <input class="btn btn-danger" type="reset" value="Reset"/>
                     <a class="btn btn-primary" href="/">Main Page</a>
                 </div>
@@ -66,6 +79,20 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    function btnClick() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
+        if(!checkedOne){
+            alert("zaznacz przynajmniej jeden bilet!")
+            return false;
+        }
+        return true;
+    }
+
+
+
+</script>
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
         integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"

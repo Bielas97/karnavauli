@@ -18,6 +18,6 @@ public class TicketDto {
     private String fullName;
     private Boolean isUni;
     //06-04-2019
-    private List<User> ticketDealers;
+    /*private List<User> ticketDealers;*/
     private List<KvTableDto> tablesDto;
 }

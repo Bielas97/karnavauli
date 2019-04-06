@@ -39,7 +39,7 @@
                     <th scope="col">Skrót</th>
                     <th scope="col">Pełna nazwa</th>
                     <th scope="col">Czy uczelnia</th>
-                    <th scope="col">Sprzedawcy</th>
+                   <!-- <th scope="col">Sprzedawcy</th>-->
                     <th scope="col">Admin</th>
                     <th scope="col">Admin</th>
                 </tr>
@@ -50,7 +50,7 @@
                     <td th:text="${c.shortName}"></td>
                     <td th:text="${c.fullName}"></td>
                     <td th:text="${c.isUni}"></td>
-                    <td th:text="${c.ticketDealers}"></td>
+                   <!-- <td th:text="${c.ticketDealers}"></td>-->
                     <td>
                         <a class="btn btn-primary mr-2" onclick="return confirm('UWAGA! zmieniasz dane biletu. Czy chcesz kontynuować?');" th:href="@{/ticket/update/{id}(id=${c.id})}">zmień</a>
                     </td>

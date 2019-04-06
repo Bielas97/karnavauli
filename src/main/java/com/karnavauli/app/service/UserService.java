@@ -23,13 +23,11 @@ public class UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
-    private TicketRepository ticketRepository;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, TicketRepository ticketRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
-        this.ticketRepository = ticketRepository;
     }
 
     public void updateUser(UserDto userDto) {
@@ -150,7 +148,7 @@ public class UserService {
         }
     }
 
-    public void addUsersToTickets(UserDto userDto, TicketDto ticketDto) {
+   /* public void addUsersToTickets(UserDto userDto, TicketDto ticketDto) {
         try {
             if (userDto == null || ticketDto == null) {
                 throw new NullPointerException("USERDTO or TICKETDTO IS NULL");
@@ -168,7 +166,7 @@ public class UserService {
                     .collect(Collectors.toList())
                     .forEach(user -> userRepository.save(user));
 
-          /*
+          //zle
             User user = userRepository.save(modelMapper.map(userDto, User.class));
             List<Ticket> tickets = userDto
                     .getTickets()
@@ -180,13 +178,12 @@ public class UserService {
                     })
                     .distinct()
                     .collect(Collectors.toList());
-            ticketRepository.saveAll(tickets);*/
+            ticketRepository.saveAll(tickets);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "ADD USERS TO TICKET EXCEPTION: " + e.getMessage());
         }
-
-    }
+    }*/
 
     public void removeDuplciatedNames(List<User> users) {
         try {

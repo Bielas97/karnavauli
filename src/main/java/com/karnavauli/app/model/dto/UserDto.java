@@ -22,8 +22,21 @@ public class UserDto {
     private String confirmPassword;
     private List<Ticket> tickets;
 
-    @Override
+    /*@Override
     public String toString() {
         return "" + username + " " + password;
+    }*/
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", numberOfTickets=" + numberOfTickets +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", tickets=" + tickets +
+                '}';
     }
 }

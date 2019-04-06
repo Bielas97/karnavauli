@@ -193,15 +193,15 @@ public class TicketService {
         }
     }
 
-    public void removeTicketDealers(TicketDto ticketDto) {
+    /*public void removeTicketDealers(TicketDto ticketDto) {
         try {
             ticketDto.getTicketDealers().clear();
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "REMOVE TICKET DEALERS EXCEPTION: " + e.getMessage());
         }
-    }
+    }*/
 
-    public void removeDuplicatesFromTicketDealers(TicketDto ticketDto) {
+    /*public void removeDuplicatesFromTicketDealers(TicketDto ticketDto) {
         try {
             Set<String> usersNames = ticketDto.getTicketDealers()
                     .stream()
@@ -211,7 +211,7 @@ public class TicketService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "REMOVE DUPLICATES FROM TICKET DEALERS EXCEPTION: " + e.getMessage());
         }
-    }
+    }*/
 
     public void addTicket(UserDto userDto, TicketDto ticketDto) {
         try {
