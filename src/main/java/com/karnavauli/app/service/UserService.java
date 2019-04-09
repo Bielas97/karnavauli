@@ -9,6 +9,7 @@ import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.TicketRepository;
 import com.karnavauli.app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,20 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
-    private ModelMapper modelMapper;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
+    public List<UserDto> getUsersByRole(Role role) {
+        return userRepository.findByRole(role)
+                .stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
     }
+
 
     public void updateUser(UserDto userDto) {
         try {
@@ -40,8 +45,15 @@ public class UserService {
 
     public void addUser(UserDto userDto) {
         try {
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            userRepository.save(modelMapper.map(userDto, User.class));
+            User user = modelMapper.map(userDto, User.class);
+            Set<Ticket> tickets = userDto
+                    .getTickets()
+                    .stream()
+                    .map(ticket -> ticketRepository.findById(ticket.getId()).orElseThrow(() -> new MyException(ExceptionCode.SERVICE, "EX")))
+                    .collect(Collectors.toSet());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setTickets(tickets);
+            userRepository.save(user);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING USER EXCEPTION: " + e.getMessage());
         }

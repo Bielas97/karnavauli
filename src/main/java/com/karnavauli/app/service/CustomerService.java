@@ -188,6 +188,13 @@ public class CustomerService {
         return false;
     }
 
+    /**
+     * price for people without student card: 190 zł
+     * price for people with student card for all places on the ground floor: 150 zł
+     * price for people with student card for all places on the other floors: 140 zł
+     * @param manyCustomers
+     * @return
+     */
     public int countPriceToBePaid(ManyCustomers manyCustomers) {
         int price = 0;
         for (CustomerDto customerDto : manyCustomers.getCustomers()) {

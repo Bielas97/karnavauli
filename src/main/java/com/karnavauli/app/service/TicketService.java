@@ -3,16 +3,14 @@ package com.karnavauli.app.service;
 import com.karnavauli.app.exceptions.ExceptionCode;
 import com.karnavauli.app.exceptions.MyException;
 import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.dto.TicketDto;
 import com.karnavauli.app.model.dto.UserDto;
-import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.entities.User;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.TicketRepository;
 import com.karnavauli.app.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -44,11 +42,9 @@ public class TicketService {
 
     public void deleteTicket(Long id, UserDto userDto) {
         try {
-            //TODO zapytac - nie da sie moze jakiegos cascade dac na userze zeby tego nie robic??
             userDto.getTickets()
                     .removeIf(ticket -> ticket.getId().equals(id));
             userRepository.save(modelMapper.map(userDto, User.class));
-
             ticketRepository.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,51 +189,14 @@ public class TicketService {
         }
     }
 
-    /*public void removeTicketDealers(TicketDto ticketDto) {
+
+    public void addTicket(TicketDto ticketDto) {
         try {
-            ticketDto.getTicketDealers().clear();
-        } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "REMOVE TICKET DEALERS EXCEPTION: " + e.getMessage());
-        }
-    }*/
-
-    /*public void removeDuplicatesFromTicketDealers(TicketDto ticketDto) {
-        try {
-            Set<String> usersNames = ticketDto.getTicketDealers()
-                    .stream()
-                    .map(User::getUsername)
-                    .collect(Collectors.toSet());
-            ticketDto.getTicketDealers().removeIf(user -> usersNames.contains(user.getUsername()));
-        } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "REMOVE DUPLICATES FROM TICKET DEALERS EXCEPTION: " + e.getMessage());
-        }
-    }*/
-
-    public void addTicket(UserDto userDto, TicketDto ticketDto) {
-        try {
-            if (userDto == null || ticketDto == null) {
-                throw new NullPointerException("USERDTO or TICKETDTO IS NULL");
-            }
-
-            userDto.getTickets().add(modelMapper.map(ticketDto, Ticket.class));
-            User user = modelMapper.map(userDto, User.class);
-            userRepository.save(user);
-
-
-            /*ticketDto.getTicketDealers()
-                    .stream()
-                    .filter(u -> u.getId() != null)
-                    .map(u ->{
-                        User user = userRepository.findById(u.getId()).orElseThrow(NullPointerException::new);
-                        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
-
-                        System.out.println(ticket.getTicketDealers());
-
-                        user.getTickets().add(ticket);
-                        return user;
-                    })
-                    .collect(Collectors.toList())
-                    .forEach(user -> userRepository.save(user));*/
+            Set<User> admins = userRepository.findByRole(Role.CEO);
+            Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
+            Ticket ticket1 = ticketRepository.save(ticket);
+            admins.forEach(user1 -> user1.getTickets().add(ticket1));
+            userRepository.saveAll(admins);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "ADD TICKET EXCEPTION: " + e.getMessage());
@@ -256,11 +215,4 @@ public class TicketService {
             throw new MyException(ExceptionCode.SERVICE, "UPDATE TICKET EXCEPTION: " + e.getMessage());
         }
     }
-
-   /* private TicketDto setRolesWithDelimiter(TicketDto ticket) {
-        String rolesWithDelimiter = ticket.getTicketDealers().stream()
-                .map(Enum::name)
-                .collect(Collectors.joining(","));
-        ticket.setRoles(rolesWithDelimiter);
-        return ticket;*/
 }

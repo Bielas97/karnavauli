@@ -44,7 +44,7 @@ public class TicketController {
 
     @PostMapping("/addTicket")
     public String addTicketPost(@ModelAttribute TicketDto ticketDto, BindingResult result, Principal principal) {
-        ticketService.addTicket(userService.getUserDtoFromUsername(principal.getName()), ticketDto);
+        ticketService.addTicket(ticketDto);
         return "redirect:/tickets";
     }
 
