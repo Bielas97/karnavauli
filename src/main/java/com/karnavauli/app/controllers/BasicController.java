@@ -64,22 +64,15 @@ public class BasicController {
     @GetMapping("/table/update/{id}")
     public String bookTable(Model model, @PathVariable Long id) {
         model.addAttribute("kvTable", kvTableService.getOneKvTable(id).orElseThrow(NullPointerException::new));
-        List<TicketDto> ticketDtos = ticketService.getAll();
-        TicketDto ticketRegular = TicketDto.builder().fullName("regular").shortName("regular").build();
-        ticketDtos.add(ticketRegular);
-        model.addAttribute("tickets", ticketDtos);
+        model.addAttribute("tickets", ticketService.getAll());
         return "kvtables/updateTable";
     }
 
     @PostMapping("/table/update")
     public String bookTablePost(@ModelAttribute KvTableDto kvTable) {
-        if (!kvTable.getOwner().equals("regular")) {
-            kvTable.setTicketDto(ticketService.getOneTicketByFullName(kvTable.getOwner()));
-        }
+        ticketService.getOneTicketByFullName(kvTable.getOwner()).ifPresent(kvTable::setTicketDto);
         kvTable.setOccupiedPlaces(kvTable.getMaxPlaces());
         kvTableService.addOrUpdateKvTable(kvTable);
-        System.out.println(kvTable.getTicketDto());
-
         return "redirect:/tables";
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Builder
 public class KvTable {
-    @GeneratedValue()
+    @GeneratedValue
     @Id
     private Long id;
     private String name;

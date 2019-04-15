@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,9 +61,9 @@ public class TicketService {
         }
     }
 
-    public TicketDto getOneTicketByFullName(String fullname) {
+    public Optional<TicketDto> getOneTicketByFullName(String fullname) {
         try {
-            return modelMapper.map(ticketRepository.findByFullName(fullname), TicketDto.class);
+            return Optional.of(modelMapper.map(ticketRepository.findByFullName(fullname), TicketDto.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET TICKET BY FULL NAME EXCEPTION: " + e.getMessage());
         }
@@ -143,11 +144,14 @@ public class TicketService {
 
     public Map<String, Integer> getFreeForUser(UserDto userDto) {
         List<KvTableDto> kvTablesForUser = getTablesForUser(userDto.getId());
+        System.out.println("funkcja getFreeForUser -> " + kvTablesForUser);
+        System.out.println("tickety usera " + userDto.getUsername() + " : " + userDto.getTickets());
         Map<String, Integer> freeTablesForUser = new HashMap<>();
 
-        kvTablesForUser.forEach(kvTableDto -> {
-            freeTablesForUser.put(kvTableDto.getName(), kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces());
-        });
+        kvTablesForUser.forEach(kvTableDto -> freeTablesForUser.put(
+                kvTableDto.getName(),
+                kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces()
+        ));
 
         return freeTablesForUser;
     }
@@ -209,7 +213,6 @@ public class TicketService {
                 throw new NullPointerException("USERDTO OR TICKETDTO IS NULL");
             }
             ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "UPDATE TICKET EXCEPTION: " + e.getMessage());

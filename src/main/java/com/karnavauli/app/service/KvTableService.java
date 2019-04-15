@@ -7,6 +7,7 @@ import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.KvTable;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.KvTableRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,16 @@ public class KvTableService {
     public void addOrUpdateKvTable(KvTableDto kvTableDto) {
         try {
             kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+        } catch (Exception e) {
+            throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
+        }
+    }
+
+    public void addOrUpdateKvTable(List<KvTableDto> kvTableDtoList) {
+        try {
+            for (KvTableDto kvTableDto : kvTableDtoList) {
+                kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+            }
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
         }
@@ -159,5 +170,18 @@ public class KvTableService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET FREE TABLES PLUS CURRENT TABLE EXCEPTION: " + e.getMessage());
         }
+    }
+
+    public List<KvTableDto> getFreeTablesForUser(UserDto userDto, int amountOfTickets) {
+        if (userDto.getRole().equals(Role.CEO)) {
+            return getFreeTablesForAmountOfPeople(amountOfTickets);
+        }
+        return ticketService.getTablesForUser(userDto.getId());
+    }
+
+    public void setRegularTicketToAllTables() {
+        List<KvTableDto> kvTableDtoList = getAll();
+        kvTableDtoList.forEach(kvTableDto -> ticketService.getOneTicketByFullName("regular").ifPresent(kvTableDto::setTicketDto));
+        addOrUpdateKvTable(kvTableDtoList);
     }
 }

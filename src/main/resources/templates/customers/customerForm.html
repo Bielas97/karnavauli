@@ -31,7 +31,6 @@
 
 <div th:if="${numberOfTickets > 0}">
 
-    <div th:if="enoughPlaces">
 
         <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
 
@@ -144,9 +143,8 @@
                 </table>
             </div>
         </div>
-
-    </div>
 </div>
+
 
 <div th:if="${numberOfTickets <= 0}">
     <h1>Uzytkownik wyczerpał pulę swoich biletów!</h1>

@@ -5,6 +5,7 @@ import com.karnavauli.app.exceptions.MyException;
 import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
+import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.service.CustomerService;
@@ -55,28 +56,12 @@ public class CustomerController {
     @GetMapping("/addCustomer/{amountOfTickets}")
     public String addCustomerGet(Model model, @PathVariable int amountOfTickets, Principal principal) {
         //List<KvTableDto> free = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
-        List<KvTableDto> freeForUser;
-        if (userService.getUserDtoFromUsername(principal.getName()).getRole().equals(Role.CEO)) {
-            freeForUser = kvTableService.getFreeTablesForAmountOfPeople(amountOfTickets);
-        } else {
-            freeForUser = ticketService.getTablesForUser(userService.getUserDtoFromUsername(principal.getName()).getId());
-            //jakis kodzik z filterkiem do amountOfTickets
-        }
-        /*free.stream().filter(kvTableDto -> {
-            User user = userService.getUserFromUsername(principal.getName());
-            for (int i = 0; i < user.getTickets().size(); i++) {
-                if (kvTableDto.getOwner().equals(user.getTickets().get(i).getFullName())) {
-                    return true;
-                }
-            }
-            return false;
-        });*/
+        UserDto userDto = userService.getUserDtoFromUsername(principal.getName());
+        List<KvTableDto> freeForUser = kvTableService.getFreeTablesForUser(userDto, amountOfTickets);
 
         model.addAttribute("manyCustomers", new ManyCustomers(amountOfTickets));
         model.addAttribute("errors", new HashMap<>());
-
         model.addAttribute("tables", freeForUser);
-
         //model.addAttribute("numberOfFreeSeats", seatsUtils.getNumberOfFreeSeats());
         model.addAttribute("numberOfFreeSeats", kvTableService.getAllFreeSeats());
         model.addAttribute("amountOfTickets", amountOfTickets);
@@ -90,8 +75,8 @@ public class CustomerController {
         //liczba dostepnych biletow do sprzedania przez danego uzytkownika
         model.addAttribute("numberOfTickets", userService.getUserFromUsername(principal.getName()).getNumberOfTickets());
 
-
-        Map<String, Integer> getFreeTablesForUser = ticketService.getFreeForUser(userService.getUserDtoFromUsername(principal.getName()));
+        Map<String, Integer> getFreeTablesForUser = ticketService.getFreeForUser(userDto);
+        System.out.println(getFreeTablesForUser);
         model.addAttribute("freeTablesForUserGroundFloor", ticketService.getGroundFloorTables(getFreeTablesForUser));
         model.addAttribute("freeTablesForUserFirstFloor", ticketService.getFirstFloorTables(getFreeTablesForUser));
         model.addAttribute("freeTablesForUserSecondFloor", ticketService.getSecondFloorTables(getFreeTablesForUser));

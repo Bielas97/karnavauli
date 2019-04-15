@@ -9,6 +9,7 @@ import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.User;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.repository.KvTableRepository;
 import org.modelmapper.ModelMapper;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class CustomerService {
     private CustomerRepository customerRepository;
     private KvTableRepository kvTableRepository;
-    private TicketService ticketService;
     private UserService userService;
     private ModelMapper modelMapper;
 
@@ -36,10 +35,9 @@ public class CustomerService {
         return amountOfOccupiedPlaces;
     }
 
-    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, TicketService ticketService, UserService userService, ModelMapper modelMapper) {
+    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, UserService userService, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
         this.kvTableRepository = kvTableRepository;
-        this.ticketService = ticketService;
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
@@ -187,6 +185,8 @@ public class CustomerService {
         }
         return false;
     }
+
+
 
     /**
      * price for people without student card: 190 zł

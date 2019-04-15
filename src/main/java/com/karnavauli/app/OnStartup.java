@@ -1,32 +1,34 @@
 package com.karnavauli.app;
 
 import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.dto.UserDto;
+import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.repository.KvTableRepository;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.TicketService;
-import com.karnavauli.app.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
-
 @Component
 public class OnStartup {
     private KvTableService kvTableService;
-    private KvTableRepository kvTableRepository;
     private CustomerService customerService;
+    private TicketService ticketService;
+    private ModelMapper modelMapper;
+    private KvTableRepository kvTableRepository;
 
-    public OnStartup(KvTableService kvTableService, KvTableRepository kvTableRepository, CustomerService customerService) {
+    public OnStartup(KvTableService kvTableService, CustomerService customerService, TicketService ticketService, ModelMapper modelMapper, KvTableRepository kvTableRepository) {
         this.kvTableService = kvTableService;
-        this.kvTableRepository = kvTableRepository;
         this.customerService = customerService;
+        this.ticketService = ticketService;
+        this.modelMapper = modelMapper;
+        this.kvTableRepository = kvTableRepository;
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void initlizeMaps(){
+    public void initlizeMaps() {
         customerService.initialFillAmountOfOccupiedPlaces();
     }
 
@@ -36,37 +38,62 @@ public class OnStartup {
      */
     @EventListener(ApplicationReadyEvent.class)
     public void initilizeKvTable() {
-
-        if (kvTableRepository.findAll().isEmpty() || kvTableRepository.findAll().size() < 91) {
+        KvTableDto kvTableDto = KvTableDto.builder().occupiedPlaces(0).soldPlaces(0).build();
+        ticketService.getOneTicketByFullName("regular").ifPresent(ticketDto -> kvTableDto.setOwner(ticketDto.getFullName()));
+        if (kvTableService.getAll().isEmpty() || kvTableService.getAll().size() < 91) {
             for (int i = 1; i < 92; i++) {
                 System.out.println(i);
                 if (i < 13) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("A0" + i).maxPlaces(10).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("A0" + i);
+                    kvTableDto.setMaxPlaces(10);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 22) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("B0" + (i - 13)).maxPlaces(10).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("B0" + (i - 13));
+                    kvTableDto.setMaxPlaces(10);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 31) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("C0" + (i - 22)).maxPlaces(10).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("C0" + (i - 22));
+                    kvTableDto.setMaxPlaces(10);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 44) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("D0" + (i - 31)).maxPlaces(10).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("D0" + (i - 31));
+                    kvTableDto.setMaxPlaces(10);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 50) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("A1" + (i - 43)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("A1" + (i - 43));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 56) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("B1" + (i - 49)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("B1" + (i - 49));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 62) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("C1" + (i - 55)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("C1" + (i - 55));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 68) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("D1" + (i - 61)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("AD" + (i - 61));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 74) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("A2" + (i - 67)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("A2" + (i - 67));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 80) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("B2" + (i - 73)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("B2" + (i - 73));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else if (i < 86) {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("C2" + (i - 79)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("C2" + (i - 79));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 } else {
-                    kvTableService.addOrUpdateKvTable(KvTableDto.builder().id((long) i).name("D2" + (i - 85)).maxPlaces(8).occupiedPlaces(0).soldPlaces(0).owner("regular").build());
+                    kvTableDto.setName("D2" + (i - 85));
+                    kvTableDto.setMaxPlaces(8);
+                    kvTableService.addOrUpdateKvTable(kvTableDto);
                 }
             }
         }
-
+        kvTableService.setRegularTicketToAllTables();
     }
 }
