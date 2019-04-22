@@ -10,6 +10,7 @@ import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.KvTableRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 public class KvTableService {
@@ -33,15 +35,17 @@ public class KvTableService {
     }
 
 
-    public void addOrUpdateKvTable(KvTableDto kvTableDto) {
+    public KvTable addOrUpdateKvTable(KvTableDto kvTableDto) {
+        log.info("Adding or updating kvTable: '" + kvTableDto + "'");
         try {
-            kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+            return kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void addOrUpdateKvTable(List<KvTableDto> kvTableDtoList) {
+    public List<KvTableDto> addOrUpdateKvTable(List<KvTableDto> kvTableDtoList) {
+        kvTableDtoList.forEach(kvTableDto -> log.info("Adding or updating list of kvTable: '" + kvTableDto + "'"));
         try {
             for (KvTableDto kvTableDto : kvTableDtoList) {
                 kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
@@ -49,18 +53,22 @@ public class KvTableService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
         }
+        return kvTableDtoList;
     }
 
 
-    public void deleteKvTable(Long id) {
+    public KvTable deleteKvTable(Long id) {
+        log.info("Deleting kvTable with id: " + id);
         try {
             kvTableRepository.deleteById(id);
+            return kvTableRepository.findById(id).orElseThrow(NullPointerException::new);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "DELETING KVTABLE EXCEPTION: " + e.getMessage());
         }
     }
 
     public Optional<KvTableDto> getOneKvTable(Long id) {
+        log.info("Getting one kvTable with id: " + id);
         try {
             return kvTableRepository.findById(id).map(kvTable -> modelMapper.map(kvTable, KvTableDto.class));
         } catch (Exception e) {
@@ -69,6 +77,7 @@ public class KvTableService {
     }
 
     public List<KvTableDto> getAll() {
+        log.info("Getting all KvTables");
         try {
             return kvTableRepository.findAll()
                     .stream()
@@ -157,7 +166,6 @@ public class KvTableService {
 
     public List<KvTableDto> getFreeTablesPlusCurrentTable(UserDto userDto, ManyCustomers manyCustomers) {
         try {
-
             List<KvTableDto> freeTablesPlusCurrenTable = ticketService.getTablesForUser(userDto.getId());
             CustomerDto cus = manyCustomers.getCustomers().get(0);
             if (cus.getKvTable().getMaxPlaces() - cus.getKvTable().getSoldPlaces() == 0) {

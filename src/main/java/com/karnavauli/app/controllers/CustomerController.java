@@ -30,33 +30,16 @@ public class CustomerController {
     private UserService userService;
     private KvTableService kvTableService;
     private TicketService ticketService;
-    //Test
-    private KvTableRepository kvTableRepository;
-    private ModelMapper modelMapper;
 
     private int priceToBePaid = 0;
-    private ManyCustomers customersWithPrice = null;
 
-
-    public CustomerController(CustomerService customerService, UserService userService, KvTableService kvTableService, TicketService ticketService, KvTableRepository kvTableRepository, ModelMapper modelMapper) {
+    public CustomerController(CustomerService customerService, UserService userService, KvTableService kvTableService, TicketService ticketService) {
         this.customerService = customerService;
         this.userService = userService;
         this.kvTableService = kvTableService;
         this.ticketService = ticketService;
-        //test
-        this.kvTableRepository = kvTableRepository;
-        this.modelMapper = modelMapper;
+
     }
-
-  /*  @InitBinder
-    private void initializeBinder(WebDataBinder webDataBinder) {
-        webDataBinder.setValidator(new CustomerValidator());
-    }*/
-
-    /*@GetMapping("/customer")
-    public String newCustomer() {
-        return "newCustomer";
-    }*/
 
     @GetMapping("/showCustomers")
     public String customers(Model model, Principal principal) {
@@ -95,7 +78,7 @@ public class CustomerController {
     }
 
     @PostMapping("/addCustomer")
-    public String addCustomerPost(/*@Valid*/ @ModelAttribute ManyCustomers manyCustomers, BindingResult result, Principal principal) {
+    public String addCustomerPost(@ModelAttribute ManyCustomers manyCustomers, BindingResult result, Principal principal) {
         customerService.addManyCustomers(userService.getUserFromUsername(principal.getName()), manyCustomers);
         priceToBePaid = customerService.countPriceToBePaid(manyCustomers);
         return "redirect:/price";
@@ -109,57 +92,6 @@ public class CustomerController {
 
         return "calculator/price";
     }
-
-   /* @PostMapping("/addCustomer")
-    public String addCustomerPost(
-            *//*@Valid*//* @ModelAttribute ManyCustomers manyCustomers,
-                       // BindingResult bindingResult,
-                       Model model,
-                       Principal principal
-    ) {
-        System.out.println(manyCustomers);
-
-        *//*if (bindingResult.hasErrors()) {
-            //wyswietlanie errorow
-            for (FieldError e : bindingResult.getFieldErrors()) {
-                System.out.println(e);
-            }
-            Map<String, String> errors
-                    = bindingResult
-                    .getFieldErrors()
-                    .stream()
-                    .collect(Collectors.toMap(FieldError::getField, FieldError::getCode));
-
-            seatsUtils.updateTables();
-            boolean isAnySeatFree = seatsUtils.isAnySeatFree();
-
-            model.addAttribute("errors", errors);
-            model.addAttribute("customerDto", customerDto);
-            model.addAttribute("seats", KvTable.values());
-            model.addAttribute("isAnySeatFree", isAnySeatFree);
-            return "redirect:/";
-        }
-
-        seatsUtils.updateTables();*//*
-
-        //customerService.setManyCustomers(manyCustomers);
-
-        //manycustomers ma miec metode setUsers gdzie do kazdego custmersa daje usera ktory go dodal
-        // customersService ma miec metode addOrUpdateManyCustomers ktora zapisuje manyCustomers
-
-        *//*customerDto.setUser(userService.getUserFromUsername(principal.getName()));
-        customerService.addOrUpdateCustomer(customerDto);*//*
-
-        //manyCustomers.getCustomers().forEach(customerDto -> seatsUtils.putTable(customerDto.getKvTable()));
-
-        //seatsUtils.putTable();
-
-        manyCustomers.setUserDto(userService.getUserFromUsername(principal.getName()));
-        customerService.addOrUpdateManyCustomers(manyCustomers);
-
-
-        return "redirect:/showCustomers";
-    }*/
 
     @GetMapping("/customer/update/{id}")
     public String customerUpdate(Model model, @PathVariable Long id, Principal principal) {

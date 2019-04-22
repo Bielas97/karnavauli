@@ -10,9 +10,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-/*@Getter
-@Setter
-@EqualsAndHashCode*/
 @Data
 public class UserDto {
     private Long id;
@@ -22,11 +19,6 @@ public class UserDto {
     private Integer numberOfTickets;
     private String confirmPassword;
     private Set<Ticket> tickets;
-
-    /*@Override
-    public String toString() {
-        return "" + username + " " + password;
-    }*/
 
     @Override
     public String toString() {

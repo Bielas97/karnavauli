@@ -10,6 +10,7 @@ import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.TicketRepository;
 import com.karnavauli.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -35,15 +37,17 @@ public class UserService {
     }
 
 
-    public void updateUser(UserDto userDto) {
+    public User updateUser(UserDto userDto) {
+        log.info("Updating user: " + userDto);
         try {
-            userRepository.save(modelMapper.map(userDto, User.class));
+            return userRepository.save(modelMapper.map(userDto, User.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "UPDATING USER EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void addUser(UserDto userDto) {
+    public User addUser(UserDto userDto) {
+        log.info("Adding user: " + userDto);
         try {
             User user = modelMapper.map(userDto, User.class);
             Set<Ticket> tickets = userDto
@@ -54,22 +58,24 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setTickets(tickets);
 
-            User us = userRepository.save(user);
-            System.out.println(us);
+            return userRepository.save(user);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING USER EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void deleteUser(Long id) {
+    public User deleteUser(Long id) {
+        log.info("Deleting user with id: " + id);
         try {
             userRepository.deleteById(id);
+            return userRepository.getOne(id);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "DELETING USER EXCEPTION: " + e.getMessage());
         }
     }
 
     public Optional<UserDto> getOneUser(Long id) {
+        log.info("Getting one user with id: " + id);
         try {
             return userRepository.findById(id).map(u -> modelMapper.map(u, UserDto.class));
         } catch (Exception e) {
@@ -78,6 +84,7 @@ public class UserService {
     }
 
     public List<UserDto> getAll() {
+        log.info("Getting all users: ");
         try {
             return userRepository.findAll()
                     .stream()
@@ -98,7 +105,6 @@ public class UserService {
 
     public User getUserFromUsername(String username) {
         try {
-            //return modelMapper.map(userRepository.findByUsername(username), UserDto.class);
             return userRepository.findByUsername(username);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GETTING USER FROM USERNAME EXCEPTION: " + e.getMessage());
@@ -161,43 +167,6 @@ public class UserService {
             throw new MyException(ExceptionCode.SERVICE, "GETTING USER BY ID EXCEPTION: " + e.getMessage());
         }
     }
-
-   /* public void addUsersToTickets(UserDto userDto, TicketDto ticket) {
-        try {
-            if (userDto == null || ticket == null) {
-                throw new NullPointerException("USERDTO or TICKETDTO IS NULL");
-            }
-            ticket.getTicketDealers()
-                    .stream()
-                    .filter(u -> u.getId() != null)
-                    .map(u ->{
-                        User user = userRepository.findById(u.getId()).orElseThrow(NullPointerException::new);
-                        Ticket ticket = modelMapper.map(ticket, Ticket.class);
-
-                        user.getTickets().add(ticket);
-                        return user;
-                    })
-                    .collect(Collectors.toList())
-                    .forEach(user -> userRepository.save(user));
-
-          //zle
-            User user = userRepository.save(modelMapper.map(userDto, User.class));
-            List<Ticket> tickets = userDto
-                    .getTickets()
-                    .stream()
-                    .map(t -> {
-                        Ticket ticket = ticketRepository.findById(t.getId()).orElseThrow(NullPointerException::new);
-                        ticket.getTicketDealers().addAll(Arrays.asList(user));
-                        return ticket;
-                    })
-                    .distinct()
-                    .collect(Collectors.toList());
-            ticketRepository.saveAll(tickets);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MyException(ExceptionCode.SERVICE, "ADD USERS TO TICKET EXCEPTION: " + e.getMessage());
-        }
-    }*/
 
     public void removeDuplciatedNames(List<User> users) {
         try {

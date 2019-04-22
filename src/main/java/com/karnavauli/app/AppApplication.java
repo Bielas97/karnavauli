@@ -42,10 +42,16 @@ public class AppApplication implements CommandLineRunner {
         return new ModelMapper();
     }
 
+
+    /**
+     * adding admin user
+     * add ticket owner to each kvTable - regular
+     * @param args
+     * @throws Exception
+     */
     @Override
     public void run(String... args) throws Exception {
         if (userRepository.findAll().stream().noneMatch(user -> user.getUsername().equals("bielas"))) {
-            System.out.println("++++++++++++++++++++++++++++++++++");
             User user = User.builder().numberOfTickets(9999).password(passwordEncoder.encode("kvAdmin")).role(Role.CEO).username("bielas").build();
             userRepository.save(user);
         }

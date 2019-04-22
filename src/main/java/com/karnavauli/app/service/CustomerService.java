@@ -11,6 +11,7 @@ import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.User;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.repository.KvTableRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 public class CustomerService {
@@ -37,18 +39,19 @@ public class CustomerService {
         this.kvTableService = kvTableService;
     }
 
-    public void addCustomer(CustomerDto customerDto) {
+    public Customer addCustomer(CustomerDto customerDto) {
+        log.info("Adding customer: '" + customerDto);
         try {
             KvTable table = kvTableRepository.findById(customerDto.getKvTable().getId()).orElseThrow(NullPointerException::new);
             table.setSoldPlaces(table.getSoldPlaces() + 1);
             kvTableRepository.save(table);
-            customerRepository.save(modelMapper.map(customerDto, Customer.class));
+            return customerRepository.save(modelMapper.map(customerDto, Customer.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADD CUSTOMER EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void deleteCustomer(Long id) {
+    public Customer deleteCustomer(Long id) {
         try {
             CustomerDto customerDto = getOneCustomer(id).orElseThrow(NullPointerException::new);
             KvTable table = kvTableRepository.findById(customerDto.getKvTable().getId()).orElseThrow(NullPointerException::new);
@@ -58,6 +61,8 @@ public class CustomerService {
             Principal principal = SecurityContextHolder.getContext().getAuthentication();
             UserDto userDto = modelMapper.map(userService.getUserFromUsername(principal.getName()), UserDto.class);
             userService.incrementNumberOfTickets(userDto);
+            log.info("Customer '" + customerDto + "' deleted!");
+            return modelMapper.map(customerDto, Customer.class);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "DELETE CUSTOMER EXCEPTION: " + e.getMessage());
         }
@@ -65,6 +70,7 @@ public class CustomerService {
 
     public Optional<CustomerDto> getOneCustomer(Long id) {
         try {
+            log.info("Getting one customer with id: " + id);
             return customerRepository.findById(id).map(c -> modelMapper.map(c, CustomerDto.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET ONE CUSTOMER EXCEPTION: " + e.getMessage());
@@ -73,6 +79,7 @@ public class CustomerService {
 
     public List<CustomerDto> getAll() {
         try {
+            log.info("Getting all Customers");
             return customerRepository.findAll()
                     .stream()
                     .map(c -> modelMapper.map(c, CustomerDto.class))
@@ -82,7 +89,7 @@ public class CustomerService {
         }
     }
 
-    public void addManyCustomers(User user, ManyCustomers manyCustomers) {
+    public ManyCustomers addManyCustomers(User user, ManyCustomers manyCustomers) {
         manyCustomers.setUserDto(user);
         KvTableDto kvTableDto = kvTableService.getOneKvTable(manyCustomers.getKvTableId()).orElseThrow(NullPointerException::new);
         if (kvTableDto.getSoldPlaces().equals(kvTableDto.getMaxPlaces()) || kvTableDto.getSoldPlaces() >= kvTableDto.getMaxPlaces()) {
@@ -102,6 +109,8 @@ public class CustomerService {
                 User userFromUsername = userService.getUserFromUsername(principal.getName());
                 UserDto userDto = modelMapper.map(userFromUsername, UserDto.class);
                 userService.decerementNumberOfTickets(userDto, manyCustomers.getCustomers().size());
+                manyCustomers.getCustomers().forEach(customerDto -> log.info("Customer '" + customerDto + "' added!"));
+                return manyCustomers;
             } catch (Exception e) {
                 throw new MyException(ExceptionCode.SERVICE, "ADDING MANY CUSTOMERS EXCEPTION: " + e.getMessage());
             }
@@ -109,7 +118,7 @@ public class CustomerService {
 
     }
 
-    public void updateManyCustomer(ManyCustomers manyCustomers) {
+    public ManyCustomers updateManyCustomer(ManyCustomers manyCustomers) {
         try {
             for (int i = 0; i < manyCustomers.getCustomers().size(); i++) {
                 //customer ktory jest wlasnie zapisywany
@@ -131,10 +140,12 @@ public class CustomerService {
                 }
                 kvTableService.addOrUpdateKvTable(tableFromDb);
                 customerRepository.save(modelMapper.map(customerFromDb, Customer.class));
+                manyCustomers.getCustomers().forEach(customerDto -> log.info("Customer '" + customerDto + "' updated!"));
             }
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "UPDATING MANY CUSTOMERS EXCEPTION: " + e.getMessage());
         }
+        return manyCustomers;
     }
 
     //nie wiem czy zadziala.
@@ -179,6 +190,7 @@ public class CustomerService {
                 }
             }
         }
+        log.info("Price for " + manyCustomers.getCustomers().size() + " counted: " + price);
         return price;
     }
 

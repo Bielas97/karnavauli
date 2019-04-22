@@ -1,8 +1,6 @@
 package com.karnavauli.app.controllers;
 
-import com.karnavauli.app.model.dto.TicketDto;
 import com.karnavauli.app.model.dto.UserDto;
-import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
@@ -19,9 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,12 +25,10 @@ import java.util.stream.Collectors;
 public class RegisterController {
     private UserService userService;
     private TicketService ticketService;
-    private ModelMapper modelMapper;
 
-    public RegisterController(UserService userService, TicketService ticketService, ModelMapper modelMapper) {
+    public RegisterController(UserService userService, TicketService ticketService) {
         this.userService = userService;
         this.ticketService = ticketService;
-        this.modelMapper = modelMapper;
     }
 
     @InitBinder
@@ -64,7 +58,6 @@ public class RegisterController {
             BindingResult bindingResult,
             Model model
     ){
-        System.out.println(userDto);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors
                     = bindingResult
