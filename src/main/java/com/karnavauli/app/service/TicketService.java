@@ -102,12 +102,12 @@ public class TicketService {
 
 
             //wersja nowa:
-           /* List<User> userList = ticketDto.getTicketDealers()
+           /* List<User> userList = ticket.getTicketDealers()
                     .stream()
                     .filter(u -> u.getId() != null)
                     .map(u ->{
                         User user = userRepository.findById(u.getId()).orElseThrow(NullPointerException::new);
-                        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
+                        Ticket ticket = modelMapper.map(ticket, Ticket.class);
 
                         user.getTickets().add(ticket);
                         return user;
@@ -117,14 +117,14 @@ public class TicketService {
 
 
             //wersja pierwotna
-            /*ticketDto.setTicketDealers(ticketDto.getTicketDealers()
+            /*ticket.setTicketDealers(ticket.getTicketDealers()
                     .stream()
                     .filter(user -> user.getId() != null)
                     .collect(Collectors.toList())
             );
 
-            Ticket ticket = ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
-            List<User> users = ticketDto
+            Ticket ticket = ticketRepository.save(modelMapper.map(ticket, Ticket.class));
+            List<User> users = ticket
                     .getTicketDealers()
                     .stream()
                     .map(u -> {
@@ -144,8 +144,8 @@ public class TicketService {
 
     public Map<String, Integer> getFreeForUser(UserDto userDto) {
         List<KvTableDto> kvTablesForUser = getTablesForUser(userDto.getId());
-        System.out.println("funkcja getFreeForUser -> " + kvTablesForUser);
-        System.out.println("tickety usera " + userDto.getUsername() + " : " + userDto.getTickets());
+        //System.out.println("funkcja getFreeForUser -> " + kvTablesForUser);
+        //System.out.println("tickety usera " + userDto.getUsername() + " : " + userDto.getTickets());
         Map<String, Integer> freeTablesForUser = new HashMap<>();
 
         kvTablesForUser.forEach(kvTableDto -> freeTablesForUser.put(

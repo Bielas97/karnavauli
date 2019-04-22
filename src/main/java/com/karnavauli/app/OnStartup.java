@@ -27,10 +27,6 @@ public class OnStartup {
         this.kvTableRepository = kvTableRepository;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void initlizeMaps() {
-        customerService.initialFillAmountOfOccupiedPlaces();
-    }
 
     /**
      * metoda uruchamiana przy starcie aplikacji

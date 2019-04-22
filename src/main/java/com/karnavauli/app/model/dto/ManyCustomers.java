@@ -10,6 +10,16 @@ public class ManyCustomers {
     private List<CustomerDto> customers;
     private Long kvTableId;
 
+    public ManyCustomers() {
+    }
+
+    public ManyCustomers(int size) {
+        customers = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            customers.add(new CustomerDto());
+        }
+    }
+
 
     public Long getKvTableId() {
         return kvTableId;
@@ -20,23 +30,13 @@ public class ManyCustomers {
     }
 
     public void setKvTable(KvTableDto kvTable) {
-        customers.forEach(kvTableDto -> kvTableDto.setKvTable(kvTable));
-
+        customers.forEach(customerDto -> customerDto.setKvTable(kvTable));
     }
 
     public void setUserDto(User user) {
         customers.forEach(customerDto -> customerDto.setUser(user));
     }
 
-    public ManyCustomers() {
-    }
-
-    public ManyCustomers(int size) {
-        customers = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            customers.add(new CustomerDto());
-        }
-    }
 
     public List<CustomerDto> getCustomers() {
         return customers;

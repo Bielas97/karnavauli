@@ -1,11 +1,11 @@
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.dto.TicketDto;
-import com.karnavauli.app.service.CustomerService;
+import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
 
 @Controller
 public class BasicController {
     private UserService userService;
     private KvTableService kvTableService;
     private TicketService ticketService;
+    private ModelMapper modelMapper;
 
-    public BasicController(UserService userService, KvTableService kvTableService, TicketService ticketService) {
+    public BasicController(UserService userService, KvTableService kvTableService, TicketService ticketService, ModelMapper modelMapper) {
         this.userService = userService;
         this.kvTableService = kvTableService;
         this.ticketService = ticketService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/")
@@ -70,7 +70,7 @@ public class BasicController {
 
     @PostMapping("/table/update")
     public String bookTablePost(@ModelAttribute KvTableDto kvTable) {
-        ticketService.getOneTicketByFullName(kvTable.getOwner()).ifPresent(kvTable::setTicketDto);
+        ticketService.getOneTicketByFullName(kvTable.getOwner()).ifPresent(ticketDto -> kvTable.setTicket(modelMapper.map(ticketDto, Ticket.class)));
         kvTable.setOccupiedPlaces(kvTable.getMaxPlaces());
         kvTableService.addOrUpdateKvTable(kvTable);
         return "redirect:/tables";

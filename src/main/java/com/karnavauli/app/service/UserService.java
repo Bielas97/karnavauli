@@ -53,7 +53,9 @@ public class UserService {
                     .collect(Collectors.toSet());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setTickets(tickets);
-            userRepository.save(user);
+
+            User us = userRepository.save(user);
+            System.out.println(us);
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING USER EXCEPTION: " + e.getMessage());
         }
@@ -160,17 +162,17 @@ public class UserService {
         }
     }
 
-   /* public void addUsersToTickets(UserDto userDto, TicketDto ticketDto) {
+   /* public void addUsersToTickets(UserDto userDto, TicketDto ticket) {
         try {
-            if (userDto == null || ticketDto == null) {
+            if (userDto == null || ticket == null) {
                 throw new NullPointerException("USERDTO or TICKETDTO IS NULL");
             }
-            ticketDto.getTicketDealers()
+            ticket.getTicketDealers()
                     .stream()
                     .filter(u -> u.getId() != null)
                     .map(u ->{
                         User user = userRepository.findById(u.getId()).orElseThrow(NullPointerException::new);
-                        Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
+                        Ticket ticket = modelMapper.map(ticket, Ticket.class);
 
                         user.getTickets().add(ticket);
                         return user;

@@ -26,7 +26,7 @@
 <div class="container" th:if="${isAnySeatFree}">
     <div class="row">
         <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-8 offset-sm-2">
-            <h2 class="mt-5">Dodaj klienta</h2>
+            <h2 class="mt-5">Zmień klienta</h2>
             <form th:action="@{/customer/update}" method="post" th:object="${manyCustomers}">
                 <!--<input type="text" th:field="*{id}" hidden="hidden"/>-->
 
@@ -42,6 +42,16 @@
                         <input th:id="surname" type="text" class="form-control"
                                th:field="*{customers[__${stat.index}__].surname}"/>
                     </div>
+
+
+                    <input th:id="faculty" type="number" class="form-controll"
+                           th:field="*{customers[__${stat.index}__].amountOfKVAppearance}" hidden="hidden">
+
+                    <input type="radio" name="optradio" th:value="true" id="myCheck1"
+                           th:field="*{customers[__${stat.index}__].isIndex}" hidden="hidden">
+                    <input type="radio" name="optradio" id="myCheck"
+                           th:field="*{customers[__${stat.index}__].isIndex}" th:value="false" hidden="hidden">
+
                 </li>
 
                 <div class="form-group">
@@ -70,13 +80,6 @@
 <div th:if="${!isAnySeatFree}">
     <h1> brak wolnych miejsc</h1>
 </div>
-
-
-
-
-
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

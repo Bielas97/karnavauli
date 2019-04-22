@@ -1,5 +1,6 @@
 package com.karnavauli.app.model.dto;
 
+import com.karnavauli.app.model.entities.Ticket;
 import lombok.*;
 
 import java.util.List;
@@ -15,11 +16,10 @@ public class KvTableDto {
     private Integer maxPlaces;
     private Integer occupiedPlaces;
     private Integer soldPlaces;
-    private List<CustomerDto> customer;
     private String owner;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private TicketDto ticketDto;
+    private Ticket ticket;
 
 
 }

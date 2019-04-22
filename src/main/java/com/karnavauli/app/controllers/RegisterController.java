@@ -64,6 +64,7 @@ public class RegisterController {
             BindingResult bindingResult,
             Model model
     ){
+        System.out.println(userDto);
         if (bindingResult.hasErrors()) {
             Map<String, String> errors
                     = bindingResult

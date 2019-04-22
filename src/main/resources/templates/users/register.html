@@ -57,8 +57,8 @@
                     <label>Bilety:</label>
                     <label>
                         <ul class="list-inline">
-                            <li th:each="s, stat : ${formTickets}" class="list-inline-item">
-                                <input type="checkbox" th:field="*{tickets[__${stat.index}__].id}" th:text="${s.fullName}" th:value="${s.id}">
+                            <li th:each="s : ${formTickets}" class="list-inline-item">
+                                <input type="checkbox" th:field="*{tickets}" th:text="${s.fullName}" th:value="${s.id}">
                             </li>
                         </ul>
                     </label>

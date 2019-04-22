@@ -9,7 +9,6 @@ import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.Customer;
 import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.User;
-import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.CustomerRepository;
 import com.karnavauli.app.repository.KvTableRepository;
 import org.modelmapper.ModelMapper;
@@ -28,18 +27,14 @@ public class CustomerService {
     private KvTableRepository kvTableRepository;
     private UserService userService;
     private ModelMapper modelMapper;
+    private KvTableService kvTableService;
 
-    private Map<String, Long> amountOfOccupiedPlaces = new HashMap<>();
-
-    public Map<String, Long> getAmountOfOccupiedPlaces() {
-        return amountOfOccupiedPlaces;
-    }
-
-    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, UserService userService, ModelMapper modelMapper) {
+    public CustomerService(CustomerRepository customerRepository, KvTableRepository kvTableRepository, UserService userService, ModelMapper modelMapper, KvTableService kvTableService) {
         this.customerRepository = customerRepository;
         this.kvTableRepository = kvTableRepository;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.kvTableService = kvTableService;
     }
 
     public void addCustomer(CustomerDto customerDto) {
@@ -87,17 +82,21 @@ public class CustomerService {
         }
     }
 
-    public void addManyCustomers(ManyCustomers manyCustomers) {
-        KvTableDto kvTableDto = modelMapper.map(kvTableRepository.getOne(manyCustomers.getKvTableId()), KvTableDto.class);
-        if (kvTableDto.getSoldPlaces().equals(kvTableDto.getMaxPlaces()) || kvTableDto.getSoldPlaces() > kvTableDto.getMaxPlaces()) {
+    public void addManyCustomers(User user, ManyCustomers manyCustomers) {
+        manyCustomers.setUserDto(user);
+        KvTableDto kvTableDto = kvTableService.getOneKvTable(manyCustomers.getKvTableId()).orElseThrow(NullPointerException::new);
+        if (kvTableDto.getSoldPlaces().equals(kvTableDto.getMaxPlaces()) || kvTableDto.getSoldPlaces() >= kvTableDto.getMaxPlaces()) {
             throw new MyException(ExceptionCode.MAX_PLACES, "ALL PLACES ARE SOLD EXCEPTION");
         } else {
             try {
-                for (int i = 0; i < manyCustomers.getCustomers().size(); i++) {
-                    KvTable table = kvTableRepository.findById(manyCustomers.getCustomers().get(i).getKvTable().getId()).orElseThrow(NullPointerException::new);
-                    table.setSoldPlaces(table.getSoldPlaces() + 1);
-                    kvTableRepository.save(table);
-                    customerRepository.save(modelMapper.map(manyCustomers.getCustomers().get(i), Customer.class));
+                Long id = manyCustomers.getKvTableId();
+                KvTable kvTable = kvTableRepository.findById(id).orElseThrow(NullPointerException::new);
+                int newSoldPlaces = kvTable.getSoldPlaces() + manyCustomers.getCustomers().size();
+                kvTable.setSoldPlaces(newSoldPlaces);
+
+                manyCustomers.setKvTable(modelMapper.map(kvTable, KvTableDto.class));
+                for (CustomerDto customerDto : manyCustomers.getCustomers()) {
+                    customerRepository.save(modelMapper.map(customerDto, Customer.class));
                 }
                 Principal principal = SecurityContextHolder.getContext().getAuthentication();
                 User userFromUsername = userService.getUserFromUsername(principal.getName());
@@ -113,18 +112,25 @@ public class CustomerService {
     public void updateManyCustomer(ManyCustomers manyCustomers) {
         try {
             for (int i = 0; i < manyCustomers.getCustomers().size(); i++) {
-                Optional<CustomerDto> customerFromDb = getOneCustomer(manyCustomers.getCustomers().get(i).getId());
-                Optional<KvTable> tableFromDb = kvTableRepository.findById(customerFromDb.get().getKvTable().getId());
+                //customer ktory jest wlasnie zapisywany
+                CustomerDto customerFromDb = getOneCustomer(manyCustomers.getCustomers().get(i).getId()).orElseThrow(NullPointerException::new);
 
-                if (!manyCustomers.getKvTableId().equals(tableFromDb.get().getId())) {
-                    tableFromDb.get().setSoldPlaces(tableFromDb.get().getSoldPlaces() - 1);
-                    KvTableDto incrementedTable = manyCustomers.getCustomers().get(i).getKvTable();
-                    incrementedTable.setSoldPlaces(incrementedTable.getSoldPlaces() + 1);
-                    kvTableRepository.save(modelMapper.map(incrementedTable, KvTable.class));
+                //kvTable custmera ktory jest wlasnie zapisywany
+                KvTableDto tableFromDb = kvTableService.getOneKvTable(customerFromDb.getKvTable().getId()).orElseThrow(NullPointerException::new);
+
+                //porownanie manyCustomers kvTable (czylo tych co chce zapisac) z aktualnym kvTable Przypisanym do danego customersa
+                if (!manyCustomers.getKvTableId().equals(tableFromDb.getId())) {
+                    tableFromDb.setSoldPlaces(tableFromDb.getSoldPlaces() - 1);
+                    KvTableDto incrementedTableDto = kvTableService.getOneKvTable(manyCustomers.getKvTableId()).orElseThrow(NegativeArraySizeException::new);
+                    incrementedTableDto.setSoldPlaces(incrementedTableDto.getSoldPlaces() + 1);
+                    incrementedTableDto.setTicket(tableFromDb.getTicket());
+                    customerFromDb.setKvTable(incrementedTableDto);
+                    customerRepository.save(modelMapper.map(customerFromDb, Customer.class));
+                    kvTableService.addOrUpdateKvTable(tableFromDb);
+                    kvTableService.addOrUpdateKvTable(incrementedTableDto);
                 }
-
-                kvTableRepository.save(tableFromDb.get());
-                customerRepository.save(modelMapper.map(manyCustomers.getCustomers().get(i), Customer.class));
+                kvTableService.addOrUpdateKvTable(tableFromDb);
+                customerRepository.save(modelMapper.map(customerFromDb, Customer.class));
             }
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "UPDATING MANY CUSTOMERS EXCEPTION: " + e.getMessage());
@@ -133,7 +139,7 @@ public class CustomerService {
 
     //nie wiem czy zadziala.
     //NIE KORZYSTAC BEZ SPRAWDZENIA FUNKCJONALNOSCI
-    public void updateCustomer(CustomerDto customerDto) {
+    /*public void updateCustomer(CustomerDto customerDto) {
         try {
             Optional<CustomerDto> customerFromDb = getOneCustomer(customerDto.getId());
             Optional<KvTable> tableFromDb = kvTableRepository.findById(customerFromDb.get().getKvTable().getId());
@@ -150,48 +156,13 @@ public class CustomerService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "UPDATING CUSTOMER EXCEPTION: " + e.getMessage());
         }
-    }
-
-    public void initialFillAmountOfOccupiedPlaces() {
-        amountOfOccupiedPlaces.clear();
-        if (!customerRepository.findAll().isEmpty()) {
-            List<CustomerDto> allCustomers = getAll();
-            amountOfOccupiedPlaces = allCustomers.stream().collect(
-                    Collectors.groupingBy(cusDto -> cusDto.getKvTable().getName(), Collectors.counting()));
-        }
-    }
-
-    public void fillAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amount) {
-        if (amountOfOccupiedPlaces.isEmpty() || amountOfOccupiedPlaces.get(kvTableDto.getName()) == null) {
-            amountOfOccupiedPlaces.put(kvTableDto.getName(), (long) amount);
-        } else {
-            amountOfOccupiedPlaces.put(kvTableDto.getName(), amountOfOccupiedPlaces.get(kvTableDto.getName()) + amount);
-        }
-    }
-
-    public void decrementAmountOfOccupiedPlaces(KvTableDto kvTableDto) {
-        Long decremention = amountOfOccupiedPlaces.get(kvTableDto.getName());
-        amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - 1);
-    }
-
-    public void decrementAmountOfOccupiedPlaces(KvTableDto kvTableDto, int amountOfDecremention) {
-        Long decremention = amountOfOccupiedPlaces.get(kvTableDto.getName());
-        amountOfOccupiedPlaces.replace(kvTableDto.getName(), decremention, decremention - amountOfDecremention);
-    }
-
-    public boolean OccupiedPlacesAreGreaterThanMax(KvTableDto kvTableDto) {
-        if (amountOfOccupiedPlaces.get(kvTableDto.getName()) != null) {
-            return amountOfOccupiedPlaces.get(kvTableDto.getName()) > kvTableDto.getMaxPlaces();
-        }
-        return false;
-    }
-
-
+    }*/
 
     /**
      * price for people without student card: 190 zł
      * price for people with student card for all places on the ground floor: 150 zł
      * price for people with student card for all places on the other floors: 140 zł
+     *
      * @param manyCustomers
      * @return
      */
@@ -210,7 +181,6 @@ public class CustomerService {
         }
         return price;
     }
-
 
 
 }
