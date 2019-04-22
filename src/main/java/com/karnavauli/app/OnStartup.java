@@ -101,5 +101,7 @@ public class OnStartup {
         log.info("Adding regular ticket to all KvTables...");
         kvTableService.setRegularTicketToAllTables();
         log.info("Regular ticket added to all KvTables!");
+        log.info("All setup is ready");
+        log.info("APPLICATION READY TO START");
     }
 }
