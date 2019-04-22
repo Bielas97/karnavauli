@@ -3,14 +3,14 @@ package com.karnavauli.app.service;
 import com.karnavauli.app.exceptions.ExceptionCode;
 import com.karnavauli.app.exceptions.MyException;
 import com.karnavauli.app.model.dto.KvTableDto;
-import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.dto.TicketDto;
 import com.karnavauli.app.model.dto.UserDto;
-import com.karnavauli.app.model.entities.KvTable;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.entities.User;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.TicketRepository;
 import com.karnavauli.app.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 public class TicketService {
@@ -32,18 +33,24 @@ public class TicketService {
         this.userRepository = userRepository;
     }
 
-    public void addOrUpdateTicket(TicketDto ticketDto) {
+    public Ticket addOrUpdateTicket(TicketDto ticketDto) {
+        log.info("Adding or updating Ticket: '" + ticketDto + "'");
         try {
-            ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
+            return ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING TICKET EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void deleteTicket(Long id) {
+    public Ticket deleteTicket(Long id, UserDto userDto) {
+        log.info("Deleting Ticket with id: '" + id + "'");
         try {
+            userDto.getTickets()
+                    .removeIf(ticket -> ticket.getId().equals(id));
+            userRepository.save(modelMapper.map(userDto, User.class));
             ticketRepository.deleteById(id);
+            return ticketRepository.getOne(id);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "DELETING TICKET EXCEPTION: " + e.getMessage());
@@ -51,6 +58,7 @@ public class TicketService {
     }
 
     public Optional<TicketDto> getOneTicket(Long id) {
+        log.info("Getting one ticket with id " + id);
         try {
             return ticketRepository.findById(id).map(t -> modelMapper.map(t, TicketDto.class));
         } catch (Exception e) {
@@ -58,29 +66,17 @@ public class TicketService {
         }
     }
 
-    public TicketDto getOneTicketByFullName(String fullname) {
+    public Optional<TicketDto> getOneTicketByFullName(String fullname) {
+        log.info("Getting one ticket with fullname: " + fullname);
         try {
-            return modelMapper.map(ticketRepository.findByFullName(fullname), TicketDto.class);
+            return Optional.of(modelMapper.map(ticketRepository.findByFullName(fullname), TicketDto.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET TICKET BY FULL NAME EXCEPTION: " + e.getMessage());
         }
     }
 
     public List<TicketDto> getAll() {
-        /*List<TicketDto> tickets = ticketRepository.findAll()
-                .stream()
-                .map(t -> modelMapper.map(t, TicketDto.class))
-                .collect(Collectors.toList());
-
-          *//*all.forEach(el -> {
-            List<Role> ticketDealers = el.getTicketDealers();
-            String collect = ticketDealers.stream().map(Enum::name).collect(Collectors.joining(","));
-            el.setRoles(collect);
-        });*//*
-
-        return tickets.stream()
-                .map(this::setRolesWithDelimiter)
-                .collect(Collectors.toList());*/
+        log.info("Getting all tickets");
         try {
             return ticketRepository.findAll()
                     .stream()
@@ -91,56 +87,33 @@ public class TicketService {
         }
     }
 
-    public void addTicketsToUsers(TicketDto ticketDto) {
-        try {
-            if (ticketDto == null) {
-                throw new NullPointerException("TICKET DTO IS NULL");
-            }
-            ticketDto.setTicketDealers(ticketDto.getTicketDealers().stream()
-                    .filter(user -> user.getId() != null)
-                    .collect(Collectors.toList()));
-            Ticket ticket = ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
-            List<User> users = ticketDto
-                    .getTicketDealers()
-                    .stream()
-                    .map(u -> {
-                        User user = userRepository.findById(u.getId()).orElseThrow(NullPointerException::new);
-                        user.getTickets().addAll(Arrays.asList(ticket));
-                        return user;
-                    })
-                    .collect(Collectors.toList());
-            userRepository.saveAll(users);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MyException(ExceptionCode.SERVICE, "ADD TICKET TO USER EXCEPTION: " + e.getMessage());
-        }
-    }
-
-
-    public Map<String, Integer> getFreeForUser(UserDto userDto){
+    public Map<String, Integer> getFreeForUser(UserDto userDto) {
         List<KvTableDto> kvTablesForUser = getTablesForUser(userDto.getId());
         Map<String, Integer> freeTablesForUser = new HashMap<>();
 
-        kvTablesForUser.forEach(kvTableDto -> {
-            freeTablesForUser.put(kvTableDto.getName(), kvTableDto.getMaxPlaces()-kvTableDto.getSoldPlaces());
-        });
+        kvTablesForUser.forEach(kvTableDto -> freeTablesForUser.put(
+                kvTableDto.getName(),
+                kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces()
+        ));
 
         return freeTablesForUser;
     }
 
-    public Map<String, Integer> getGroundFloorTables(Map<String, Integer> map){
+    public Map<String, Integer> getGroundFloorTables(Map<String, Integer> map) {
         return map.entrySet()
                 .stream()
                 .filter(m -> m.getKey().charAt(1) == '0')
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
-    public Map<String, Integer> getFirstFloorTables(Map<String, Integer> map){
+
+    public Map<String, Integer> getFirstFloorTables(Map<String, Integer> map) {
         return map.entrySet()
                 .stream()
                 .filter(m -> m.getKey().charAt(1) == '1')
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
-    public Map<String, Integer> getSecondFloorTables(Map<String, Integer> map){
+
+    public Map<String, Integer> getSecondFloorTables(Map<String, Integer> map) {
         return map.entrySet()
                 .stream()
                 .filter(m -> m.getKey().charAt(1) == '2')
@@ -163,30 +136,32 @@ public class TicketService {
         }
     }
 
-    public void removeTicketDealers(TicketDto ticketDto) {
+
+    public Ticket addTicket(TicketDto ticketDto) {
         try {
-            ticketDto.getTicketDealers().clear();
+            Set<User> admins = userRepository.findByRole(Role.CEO);
+            Ticket ticket = modelMapper.map(ticketDto, Ticket.class);
+            Ticket ticket1 = ticketRepository.save(ticket);
+            admins.forEach(user1 -> user1.getTickets().add(ticket1));
+            userRepository.saveAll(admins);
+            log.info("Ticket: " + ticket1 + " added!");
+            return ticket1;
         } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "REMOVE TICKET DEALERS EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
+            throw new MyException(ExceptionCode.SERVICE, "ADD TICKET EXCEPTION: " + e.getMessage());
         }
     }
 
-    public void removeDuplicatesFromTicketDealers(TicketDto ticketDto) {
+    public Ticket updateTicket(UserDto userDto, TicketDto ticketDto) {
+        log.info("Updating ticket: " + ticketDto);
         try {
-            Set<String> usersNames = ticketDto.getTicketDealers()
-                    .stream()
-                    .map(User::getUsername)
-                    .collect(Collectors.toSet());
-            ticketDto.getTicketDealers().removeIf(user -> usersNames.contains(user.getUsername()));
+            if (userDto == null || ticketDto == null) {
+                throw new NullPointerException("USERDTO OR TICKETDTO IS NULL");
+            }
+            return ticketRepository.save(modelMapper.map(ticketDto, Ticket.class));
         } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "REMOVE DUPLICATES FROM TICKET DEALERS EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
+            throw new MyException(ExceptionCode.SERVICE, "UPDATE TICKET EXCEPTION: " + e.getMessage());
         }
     }
-
-   /* private TicketDto setRolesWithDelimiter(TicketDto ticket) {
-        String rolesWithDelimiter = ticket.getTicketDealers().stream()
-                .map(Enum::name)
-                .collect(Collectors.joining(","));
-        ticket.setRoles(rolesWithDelimiter);
-        return ticket;*/
 }

@@ -29,9 +29,8 @@
 
 <br>
 
-<div th:if="${numberOfTickets > 0}">
+<div th:if="${numberOfTicketsForUser > 0}">
 
-    <div th:if="enoughPlaces">
 
         <div class="container" th:if="${numberOfFreeSeats} &gt; ${amountOfTickets}">
 
@@ -53,11 +52,9 @@
 
                             <div class="form-group">
                                 <label th:for="'kvTable'">Dostępne stoliki dla wybranej ilości osób:</label>
-
                                 <select th:id="'kvTable'" class="form-control" th:field="*{kvTableId}">
-                                    <option th:each="e: ${tables}" th:value="${e.id}" th:text="${e.name}"></option>
+                                    <option th:each="e: ${freeTablesForUser}" th:value="${e.id}" th:text="${e.name}"></option>
                                 </select>
-
                             </div>
 
                             <li th:each="c, stat : *{customers}">
@@ -144,11 +141,10 @@
                 </table>
             </div>
         </div>
-
-    </div>
 </div>
 
-<div th:if="${numberOfTickets <= 0}">
+
+<div th:if="${numberOfTicketsForUser <= 0}">
     <h1>Uzytkownik wyczerpał pulę swoich biletów!</h1>
 </div>
 

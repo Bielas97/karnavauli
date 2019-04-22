@@ -7,16 +7,20 @@ import com.karnavauli.app.model.dto.KvTableDto;
 import com.karnavauli.app.model.dto.ManyCustomers;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.KvTable;
+import com.karnavauli.app.model.entities.Ticket;
+import com.karnavauli.app.model.enums.Role;
 import com.karnavauli.app.repository.KvTableRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 public class KvTableService {
@@ -24,46 +28,61 @@ public class KvTableService {
     private ModelMapper modelMapper;
     private TicketService ticketService;
 
-    private CustomerService customerService;
-
-    public KvTableService(KvTableRepository kvTableRepository, ModelMapper modelMapper, TicketService ticketService, CustomerService customerService) {
+    public KvTableService(KvTableRepository kvTableRepository, ModelMapper modelMapper, TicketService ticketService) {
         this.kvTableRepository = kvTableRepository;
         this.modelMapper = modelMapper;
         this.ticketService = ticketService;
-        this.customerService = customerService;
     }
 
 
-    public void addOrUpdateKvTable(KvTableDto kvTableDto) {
+    public KvTable addOrUpdateKvTable(KvTableDto kvTableDto) {
+        log.info("Adding or updating kvTable: '" + kvTableDto + "'");
         try {
-            kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+            return kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
         }
     }
 
+    public List<KvTableDto> addOrUpdateKvTable(List<KvTableDto> kvTableDtoList) {
+        kvTableDtoList.forEach(kvTableDto -> log.info("Adding or updating list of kvTable: '" + kvTableDto + "'"));
+        try {
+            for (KvTableDto kvTableDto : kvTableDtoList) {
+                kvTableRepository.save(modelMapper.map(kvTableDto, KvTable.class));
+            }
+        } catch (Exception e) {
+            throw new MyException(ExceptionCode.SERVICE, "ADDING OR UPDATING EXCEPTION: " + e.getMessage());
+        }
+        return kvTableDtoList;
+    }
 
-    public void deleteKvTable(Long id) {
+
+    public KvTable deleteKvTable(Long id) {
+        log.info("Deleting kvTable with id: " + id);
         try {
             kvTableRepository.deleteById(id);
+            return kvTableRepository.findById(id).orElseThrow(NullPointerException::new);
         } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "DELTEING KVTABLE EXCEPTION: " + e.getMessage());
+            throw new MyException(ExceptionCode.SERVICE, "DELETING KVTABLE EXCEPTION: " + e.getMessage());
         }
     }
 
     public Optional<KvTableDto> getOneKvTable(Long id) {
+        log.info("Getting one kvTable with id: " + id);
         try {
             return kvTableRepository.findById(id).map(kvTable -> modelMapper.map(kvTable, KvTableDto.class));
         } catch (Exception e) {
-            throw new MyException(ExceptionCode.SERVICE, "GETTIN ONE KV TABLE EXCEPTION: " + e.getMessage());
+            throw new MyException(ExceptionCode.SERVICE, "GETTING ONE KV TABLE EXCEPTION: " + e.getMessage());
         }
     }
 
     public List<KvTableDto> getAll() {
+        log.info("Getting all KvTables");
         try {
             return kvTableRepository.findAll()
                     .stream()
                     .map(kvTable -> modelMapper.map(kvTable, KvTableDto.class))
+                    .sorted(Comparator.comparing(KvTableDto::getName))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GETTING ALL KVTABLES EXCEPTION: " + e.getMessage());
@@ -71,7 +90,7 @@ public class KvTableService {
     }
 
 
-    public int getAllFreeSeats() {
+    public int getNumberOfAllFreeSeats() {
         try {
             List<KvTableDto> allTables = getAll();
             int numberOfFreeSeats = 0;
@@ -85,7 +104,7 @@ public class KvTableService {
     }
 
     public boolean isAnySeatFree() {
-        return getAllFreeSeats() > 0;
+        return getNumberOfAllFreeSeats() > 0;
     }
 
     public List<KvTableDto> getFreeTables() {
@@ -103,7 +122,7 @@ public class KvTableService {
         try {
             return getAll()
                     .stream()
-                    .filter(kvTableDto -> kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces() != 0 &&
+                    .filter(kvTableDto -> kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces() > 0 &&
                             kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces() >= amountOfPeople)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -145,10 +164,9 @@ public class KvTableService {
 
     }
 
-    public List<KvTableDto> getFreeTablesPlusCurrentTable(ManyCustomers manyCustomers) {
+    public List<KvTableDto> getFreeTablesPlusCurrentTable(UserDto userDto, ManyCustomers manyCustomers) {
         try {
-
-            List<KvTableDto> freeTablesPlusCurrenTable = getFreeTables();
+            List<KvTableDto> freeTablesPlusCurrenTable = ticketService.getTablesForUser(userDto.getId());
             CustomerDto cus = manyCustomers.getCustomers().get(0);
             if (cus.getKvTable().getMaxPlaces() - cus.getKvTable().getSoldPlaces() == 0) {
                 freeTablesPlusCurrenTable.add(0, manyCustomers.getCustomers().get(0).getKvTable());
@@ -157,5 +175,25 @@ public class KvTableService {
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GET FREE TABLES PLUS CURRENT TABLE EXCEPTION: " + e.getMessage());
         }
+    }
+
+    public List<KvTableDto> getFreeTablesForUser(UserDto userDto, int amountOfTickets) {
+        if (userDto.getRole().equals(Role.CEO)) {
+            return getFreeTablesForAmountOfPeople(amountOfTickets);
+        }
+        else {
+            List<KvTableDto> kvTableDtoList = ticketService.getTablesForUser(userDto.getId());
+            return kvTableDtoList
+                    .stream()
+                    .filter(kvTableDto -> kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces() > 0 &&
+                            kvTableDto.getMaxPlaces() - kvTableDto.getSoldPlaces() >= amountOfTickets)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public void setRegularTicketToAllTables() {
+        List<KvTableDto> kvTableDtoList = getAll();
+        kvTableDtoList.forEach(kvTableDto -> ticketService.getOneTicketByFullName("regular").ifPresent(ticketDto -> kvTableDto.setTicket(modelMapper.map(ticketDto, Ticket.class))));
+        addOrUpdateKvTable(kvTableDtoList);
     }
 }

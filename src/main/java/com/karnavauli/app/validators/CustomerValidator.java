@@ -12,7 +12,6 @@ public class CustomerValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        //TODO: nie wiem jeszcze jakie dokladnie maja byc pola w entity Customer
 
         CustomerDto customerDto = (CustomerDto) o;
 

@@ -45,11 +45,6 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                /*.antMatchers("/user").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN),
-                   String.valueOf(Role.USER)) //strona dla kazdego
-                .antMatchers("/admin").hasAnyRole(String.valueOf(Role.CEO)) //strona tylko dla CEO
-                .antMatchers("/testUczelnie").hasAnyRole(String.valueOf(Role.CEO), String.valueOf(Role.PW_ADMIN))
-                //strona dla uczlenianych adminow*/
                 .antMatchers("/register").hasAnyRole(String.valueOf(Role.CEO)) // strona tylko dla CEO
                 .antMatchers("/table/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
                 .antMatchers("/ticket/update/{id}").hasAnyRole(String.valueOf(Role.CEO))

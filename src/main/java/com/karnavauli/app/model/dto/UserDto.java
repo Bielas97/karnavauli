@@ -5,13 +5,11 @@ import com.karnavauli.app.model.enums.Role;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-/*@Getter
-@Setter
-@EqualsAndHashCode*/
 @Data
 public class UserDto {
     private Long id;
@@ -20,10 +18,18 @@ public class UserDto {
     private Role role;
     private Integer numberOfTickets;
     private String confirmPassword;
-    private List<Ticket> tickets;
+    private Set<Ticket> tickets;
 
     @Override
     public String toString() {
-        return "" + username + " " + password;
+        return "UserDto{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", numberOfTickets=" + numberOfTickets +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", tickets=" + tickets +
+                '}';
     }
 }
