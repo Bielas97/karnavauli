@@ -50,11 +50,20 @@ public class UserService {
         log.info("Adding user: " + userDto);
         try {
             User user = modelMapper.map(userDto, User.class);
-            Set<Ticket> tickets = userDto
-                    .getTickets()
-                    .stream()
-                    .map(ticket -> ticketRepository.findById(ticket.getId()).orElseThrow(() -> new MyException(ExceptionCode.SERVICE, "EX")))
-                    .collect(Collectors.toSet());
+            Set<Ticket> tickets = null;
+            if( userDto.getTickets() != null ) {
+                tickets = userDto
+                        .getTickets()
+                        .stream()
+                        .map(ticket -> ticketRepository.findById(ticket.getId()).orElseThrow(() -> new MyException(ExceptionCode.SERVICE, "EX")))
+                        .collect(Collectors.toSet());
+            }
+            else if((userDto.getTicketShortname() != null && !userDto.getTicketShortname().equals("")) || userDto.getTickets().isEmpty()){
+                tickets = ticketRepository.findAll()
+                        .stream()
+                        .filter(ticket -> ticket.getShortName().equals(userDto.getTicketShortname()))
+                        .collect(Collectors.toSet());
+            }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setTickets(tickets);
 

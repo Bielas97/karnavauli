@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.UserDto;
@@ -74,3 +75,4 @@ public class RegisterController {
         return "redirect:/";
     }
 }
+*/

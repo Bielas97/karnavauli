@@ -1,5 +1,6 @@
 package com.karnavauli.app.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class TicketDto {
     private String shortName;
     private String fullName;
     private Boolean isUni;
+    @JsonIgnore
     private List<KvTableDto> tablesDto;
 }

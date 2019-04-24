@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.KvTableDto;
@@ -77,3 +78,4 @@ public class BasicController {
     }
 
 }
+*/

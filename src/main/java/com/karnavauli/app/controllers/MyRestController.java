@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,3 +16,4 @@ public class MyRestController {
         return "TEST2";
     }
 }
+*/

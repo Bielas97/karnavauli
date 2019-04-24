@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,10 +26,12 @@ import java.io.IOException;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity
 public class MyWebSecurity extends WebSecurityConfigurerAdapter {
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public MyWebSecurity(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    public MyWebSecurity(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Autowired
@@ -43,7 +46,7 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        /*http
                 .authorizeRequests()
                 .antMatchers("/register").hasAnyRole(String.valueOf(Role.CEO)) // strona tylko dla CEO
                 .antMatchers("/table/update/{id}").hasAnyRole(String.valueOf(Role.CEO))
@@ -74,7 +77,32 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(accessDeniedHandler())
 
                 .and()
-                .httpBasic();
+                .httpBasic()
+
+                //filtry:
+                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager()));*/
+
+        http
+                .csrf().disable()
+
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                .and()
+                .authorizeRequests()
+                .antMatchers("/register").permitAll()
+                .antMatchers("/admin/**").hasRole("CEO")
+                //.antMatchers("/user/**").hasRole("USER")
+                .anyRequest().authenticated()
+
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager()));
+
     }
 
     @Bean

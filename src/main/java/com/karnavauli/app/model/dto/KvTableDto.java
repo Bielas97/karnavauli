@@ -1,5 +1,6 @@
 package com.karnavauli.app.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.karnavauli.app.model.entities.Ticket;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class KvTableDto {
     private String owner;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     private Ticket ticket;
 
 

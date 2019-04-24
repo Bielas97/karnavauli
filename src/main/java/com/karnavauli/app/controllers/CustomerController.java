@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.CustomerDto;
@@ -130,3 +131,4 @@ public class CustomerController {
         return "redirect:/showCustomers";
     }
 }
+*/

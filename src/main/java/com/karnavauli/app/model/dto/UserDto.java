@@ -1,5 +1,6 @@
 package com.karnavauli.app.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.enums.Role;
 import lombok.*;
@@ -17,8 +18,11 @@ public class UserDto {
     private String password;
     private Role role;
     private Integer numberOfTickets;
+    @JsonIgnore
     private String confirmPassword;
+    @JsonIgnore
     private Set<Ticket> tickets;
+    private String ticketShortname;
 
     @Override
     public String toString() {

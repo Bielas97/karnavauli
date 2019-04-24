@@ -46,11 +46,12 @@ public class TicketService {
     public Ticket deleteTicket(Long id, UserDto userDto) {
         log.info("Deleting Ticket with id: '" + id + "'");
         try {
+            Ticket ticketToBeReturned = ticketRepository.getOne(id);
             userDto.getTickets()
                     .removeIf(ticket -> ticket.getId().equals(id));
             userRepository.save(modelMapper.map(userDto, User.class));
             ticketRepository.deleteById(id);
-            return ticketRepository.getOne(id);
+            return ticketToBeReturned;
         } catch (Exception e) {
             e.printStackTrace();
             throw new MyException(ExceptionCode.SERVICE, "DELETING TICKET EXCEPTION: " + e.getMessage());

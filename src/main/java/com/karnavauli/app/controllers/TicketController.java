@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.model.dto.TicketDto;
@@ -69,3 +70,4 @@ public class TicketController {
         return "redirect:/tickets";
     }
 }
+*/

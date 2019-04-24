@@ -1,3 +1,4 @@
+/*
 package com.karnavauli.app.controllers;
 
 import com.karnavauli.app.exceptions.MyException;
@@ -18,3 +19,4 @@ public class ExceptionsController {
     }
 
 }
+*/
