@@ -34,3 +34,7 @@ It is strictly forbidden to use this application for markets purposes. Any of th
 
 Jakub Bielawski for Board of European Students of Technology (BEST)
 jakub.bielawski@wawasoft.com
+
+##docker
+
+https://stackabuse.com/dockerizing-a-spring-boot-application/
