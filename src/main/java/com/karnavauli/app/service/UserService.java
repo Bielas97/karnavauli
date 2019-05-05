@@ -2,6 +2,7 @@ package com.karnavauli.app.service;
 
 import com.karnavauli.app.exceptions.ExceptionCode;
 import com.karnavauli.app.exceptions.MyException;
+import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.dto.TicketDto;
 import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.entities.Ticket;

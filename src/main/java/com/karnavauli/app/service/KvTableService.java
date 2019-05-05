@@ -76,6 +76,15 @@ public class KvTableService {
         }
     }
 
+    public Optional<KvTableDto> getOneKvTableByName(String name){
+        log.info("Getting one kvTable with name: " + name);
+        try {
+            return kvTableRepository.findByName(name).map(kvTable -> modelMapper.map(kvTable, KvTableDto.class));
+        } catch (Exception e) {
+            throw new MyException(ExceptionCode.SERVICE, "GETTING ONE KV TABLE EXCEPTION: " + e.getMessage());
+        }
+    }
+
     public List<KvTableDto> getAll() {
         log.info("Getting all KvTables");
         try {

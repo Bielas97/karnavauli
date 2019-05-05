@@ -42,9 +42,20 @@ public class CustomerService {
     public Customer addCustomer(CustomerDto customerDto) {
         log.info("Adding customer: '" + customerDto);
         try {
-            KvTable table = kvTableRepository.findById(customerDto.getKvTable().getId()).orElseThrow(NullPointerException::new);
+            KvTable table = kvTableRepository.findByName(customerDto.getKvTableName()).orElseThrow(NullPointerException::new);
+            if(table.getSoldPlaces() >= table.getMaxPlaces() || table.getSoldPlaces() >= table.getOccupiedPlaces()){
+                throw new MyException(ExceptionCode.SERVICE, "ADD CUSTOMER EXCEPTION: Already sold all places to this Table" );
+            }
+            Principal principal = SecurityContextHolder.getContext().getAuthentication();
+            User userFromUsername = userService.getUserFromUsername(principal.getName());
+            UserDto userDto = modelMapper.map(userFromUsername, UserDto.class);
+            customerDto.setUser(userFromUsername);
+            if(customerDto.getKvTable() == null && customerDto.getKvTableName() != null){
+                kvTableService.getOneKvTableByName(customerDto.getKvTableName()).ifPresent(customerDto::setKvTable);
+            }
             table.setSoldPlaces(table.getSoldPlaces() + 1);
             kvTableRepository.save(table);
+            userService.decerementNumberOfTickets(userDto);
             return customerRepository.save(modelMapper.map(customerDto, Customer.class));
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "ADD CUSTOMER EXCEPTION: " + e.getMessage());
@@ -77,13 +88,13 @@ public class CustomerService {
         }
     }
 
-    public List<CustomerDto> getAll() {
+    public Set<CustomerDto> getAll() {
         try {
             log.info("Getting all Customers");
             return customerRepository.findAll()
                     .stream()
                     .map(c -> modelMapper.map(c, CustomerDto.class))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         } catch (Exception e) {
             throw new MyException(ExceptionCode.SERVICE, "GETTING ALL CUSTOMERS EXCEPTION: " + e.getMessage());
         }
@@ -194,5 +205,12 @@ public class CustomerService {
         return price;
     }
 
+    public Set<CustomerDto> getCustomersSoldByUser(UserDto userDto){
+        User user = modelMapper.map(userDto, User.class);
+         return customerRepository.findByUser(user)
+                .stream()
+                .map(customer-> modelMapper.map(customer, CustomerDto.class))
+                .collect(Collectors.toSet());
+    }
 
 }
