@@ -1,6 +1,7 @@
 package com.karnavauli.app.security;
 
 import com.karnavauli.app.model.enums.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -25,14 +26,10 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity
+@RequiredArgsConstructor
 public class MyWebSecurity extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-    public MyWebSecurity(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -95,10 +92,8 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("CEO")
                 //.antMatchers("/user/**").hasRole("USER")
                 .anyRequest().authenticated()
-
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager()));

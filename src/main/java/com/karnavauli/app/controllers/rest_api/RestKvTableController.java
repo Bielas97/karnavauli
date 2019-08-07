@@ -6,6 +6,7 @@ import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.jwt.Info;
 import com.karnavauli.app.service.KvTableService;
 import com.karnavauli.app.service.TicketService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,16 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 public class RestKvTableController {
-    private KvTableService kvTableService;
-    private TicketService ticketService;
-    private ModelMapper modelMapper;
-
-    public RestKvTableController(KvTableService kvTableService, TicketService ticketService, ModelMapper modelMapper) {
-        this.kvTableService = kvTableService;
-        this.ticketService = ticketService;
-        this.modelMapper = modelMapper;
-    }
+    private final KvTableService kvTableService;
+    private final TicketService ticketService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/user/all-tables")
     public List<KvTableDto> getAllTables() {

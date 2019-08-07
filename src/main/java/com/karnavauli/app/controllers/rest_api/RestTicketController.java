@@ -6,20 +6,17 @@ import com.karnavauli.app.model.entities.Ticket;
 import com.karnavauli.app.model.jwt.Info;
 import com.karnavauli.app.service.TicketService;
 import com.karnavauli.app.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class RestTicketController {
-    private TicketService ticketService;
-    private UserService userService;
-
-    public RestTicketController(TicketService ticketService, UserService userService) {
-        this.ticketService = ticketService;
-        this.userService = userService;
-    }
+    private final TicketService ticketService;
+    private final UserService userService;
 
     @GetMapping("/user/get-all-tickets")
     public List<TicketDto> getAllTickets(){

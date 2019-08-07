@@ -4,6 +4,7 @@ import com.karnavauli.app.model.dto.CustomerDto;
 import com.karnavauli.app.model.jwt.Info;
 import com.karnavauli.app.service.CustomerService;
 import com.karnavauli.app.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,14 +14,10 @@ import java.security.Principal;
 import java.util.Set;
 
 @RestController
+@RequiredArgsConstructor
 public class RestCustomerController {
-    private CustomerService customerService;
-    private UserService userService;
-
-    public RestCustomerController(CustomerService customerService, UserService userService) {
-        this.customerService = customerService;
-        this.userService = userService;
-    }
+    private final CustomerService customerService;
+    private final UserService userService;
 
     @GetMapping("/user/show-your-customers")
     public Set<CustomerDto> showUsersCustomers(Principal principal) {

@@ -1,20 +1,15 @@
 package com.karnavauli.app.controllers.rest_api;
 
-import com.karnavauli.app.model.dto.UserDto;
 import com.karnavauli.app.model.jwt.Info;
 import com.karnavauli.app.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
+@RequiredArgsConstructor
 public class RestMainController {
-    private UserService userService;
-
-    public RestMainController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @GetMapping("/admin")
     public Info admin() {
